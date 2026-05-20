@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #0a0a0a;
+    color: #e8e4d8;
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+  }
+  body { padding: 3vh 6vw 14vh 6vw; max-width: 1600px; margin: 0 auto; line-height: 1.5; }
+  .hidden { display: none !important; }
+
+  /* TOP BAR */
+  #topbar {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 1.4rem; color: #6f7a6f; letter-spacing: 0.06em;
+    margin-bottom: 4vh; font-variant-numeric: tabular-nums;
+    border-bottom: 1px solid #1c1c1a; padding-bottom: 2vh;
+  }
+  #session-clock { color: #b8a878; font-weight: 600; }
+
+  /* LABELS */
+  .label {
+    font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.4em;
+    color: #b8a878; margin-bottom: 1.5vh;
+  }
+
+  /* DEVOTIONAL */
+  #devotional-section { margin-bottom: 7vh; }
+  #reading-ref {
+    font-size: 5.2rem; font-weight: 400; line-height: 1.05;
+    margin-bottom: 1.2vh; letter-spacing: -0.01em;
+  }
+  .opening {
+    font-size: 1.4rem; color: #7a7568; font-style: italic;
+    margin-bottom: 3.5vh; max-width: 64ch;
+  }
+  #devotional-body { max-width: 64ch; }
+  #devotional-body h3 {
+    font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.28em;
+    color: #b8a878; font-weight: 500;
+    margin: 4vh 0 1.5vh 0;
+  }
+  #devotional-body p {
+    font-size: 1.7rem; line-height: 1.55; color: #e8e4d8;
+    margin-bottom: 1.5vh;
+  }
+  #devotional-body .verse {
+    font-size: 1.55rem; color: #c8c2b0; font-style: italic;
+    border-left: 3px solid #3a3a36; padding: 0.5vh 0 0.5vh 1.5vw;
+    margin: 2vh 0; max-width: 60ch;
+  }
+  .reflect-short {
+    font-size: 1.95rem; line-height: 1.55; color: #e8e4d8; max-width: 56ch;
+  }
+
+  /* BEGIN BUTTON */
+  .begin-btn {
+    background: #1a1a18; color: #e8e4d8; border: 1px solid #3a3a36;
+    padding: 1.8vh 3vw; font-size: 1.4rem; font-family: inherit;
+    letter-spacing: 0.12em; cursor: pointer; border-radius: 4px;
+    margin-top: 3vh;
+  }
+  .begin-btn:hover, .begin-btn:focus { background: #2a2a26; border-color: #b8a878; outline: none; }
+
+  /* SECTION DIVIDER */
+  .section-rule { border: none; border-top: 1px solid #1c1c1a; margin: 6vh 0 5vh 0; }
+
+  /* MOBILITY */
+  #mobility-section { margin-bottom: 7vh; }
+  #mobility-list { list-style: none; counter-reset: mob; }
+  .mob-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 2.2vh 0; border-bottom: 1px solid #1c1c1a; gap: 2vw;
+  }
+  .mob-row:last-child { border-bottom: none; }
+  .mob-left { flex: 1; }
+  .mob-name {
+    font-size: 2rem; color: #e8e4d8; margin-bottom: 0.3vh;
+  }
+  .mob-dose { font-size: 1.3rem; color: #8a8475; font-style: italic; }
+  .mob-row.done .mob-name { color: #6f7a6f; text-decoration: line-through; }
+  .mob-btn {
+    background: #1a1a18; color: #e8e4d8; border: 1px solid #3a3a36;
+    padding: 1.2vh 2vw; font-size: 1.2rem; font-family: inherit;
+    letter-spacing: 0.1em; cursor: pointer; border-radius: 4px; min-width: 9vw;
+  }
+  .mob-btn:hover, .mob-btn:focus { border-color: #b8a878; outline: none; }
+  .mob-btn.done { background: #1f2a1f; color: #6fa06f; border-color: #2a3a2a; }
+
+  /* WORKOUT */
+  #workout-section { margin-bottom: 6vh; }
+  #workout-title {
+    font-size: 3.8rem; font-weight: 400; margin-bottom: 4vh; letter-spacing: -0.01em;
+  }
+  .ex-card {
+    border-top: 1px solid #1c1c1a; padding: 3vh 0 2.5vh 0;
+  }
+  .ex-card:last-child { border-bottom: 1px solid #1c1c1a; }
+  .ex-name { font-size: 2.4rem; margin-bottom: 0.8vh; line-height: 1.15; }
+  .ex-meta {
+    font-size: 1.3rem; color: #8a8475; margin-bottom: 1.5vh;
+    font-variant-numeric: tabular-nums;
+  }
+  .ex-meta .sep { color: #3a3a36; margin: 0 0.6em; }
+  .ex-weight-row {
+    display: flex; align-items: center; gap: 1.2vw; margin: 1.5vh 0;
+    flex-wrap: wrap;
+  }
+  .last-weight {
+    font-size: 1.3rem; color: #8a8475;
+  }
+  .last-weight strong { color: #b8a878; font-weight: 500; }
+  .weight-input {
+    background: #151513; border: 1px solid #3a3a36; color: #e8e4d8;
+    padding: 1vh 1.2vw; font-size: 1.6rem; font-family: inherit;
+    border-radius: 4px; width: 9rem; font-variant-numeric: tabular-nums;
+  }
+  .weight-input:focus { border-color: #b8a878; outline: none; }
+  .mic-btn {
+    background: #1a1a18; color: #e8e4d8; border: 1px solid #3a3a36;
+    width: 3.4rem; height: 3.4rem; font-size: 1.4rem; cursor: pointer;
+    border-radius: 50%; font-family: inherit;
+  }
+  .mic-btn:hover, .mic-btn:focus { border-color: #b8a878; outline: none; }
+  .mic-btn.listening { background: #3a1f1f; border-color: #c87878; }
+  .set-dots {
+    display: flex; gap: 0.6vw; margin: 1.5vh 0;
+  }
+  .set-dot {
+    width: 1.8rem; height: 1.8rem; border-radius: 50%;
+    background: #1a1a18; border: 2px solid #3a3a36;
+  }
+  .set-dot.done { background: #2a4a2a; border-color: #6fa06f; }
+  .set-dot.current { border-color: #b8a878; }
+  .set-btn {
+    background: #1a1a18; color: #e8e4d8; border: 1px solid #3a3a36;
+    padding: 1.4vh 2.5vw; font-size: 1.3rem; font-family: inherit;
+    letter-spacing: 0.1em; cursor: pointer; border-radius: 4px;
+    margin-top: 1vh;
+  }
+  .set-btn:hover, .set-btn:focus { border-color: #b8a878; outline: none; }
+  .set-btn.complete { background: #1f2a1f; color: #6fa06f; border-color: #2a3a2a; }
+  .ex-cues { margin-top: 1.5vh; max-width: 60ch; }
+  .ex-cue {
+    font-size: 1.25rem; color: #8a8475; line-height: 1.5;
+    margin-bottom: 0.5vh;
+  }
+  .ex-cue .cue-lbl {
+    color: #b8a878; font-variant: small-caps; letter-spacing: 0.1em;
+    margin-right: 0.4em;
+  }
+  .ex-card.done { opacity: 0.55; }
+  .ex-card.current { /* could highlight; keep minimal for now */ }
+
+  /* TIMER OVERLAY */
+  #timer-overlay {
+    position: fixed; inset: 0; background: rgba(10,10,10,0.97);
+    z-index: 100; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 4vh;
+  }
+  #timer-name {
+    font-size: 1.8rem; color: #b8a878; letter-spacing: 0.1em;
+    margin-bottom: 3vh; text-align: center; max-width: 70ch;
+  }
+  #timer-display {
+    font-size: 14rem; color: #e8e4d8; font-weight: 300;
+    font-variant-numeric: tabular-nums; line-height: 1;
+    letter-spacing: -0.02em; margin-bottom: 4vh;
+  }
+  #timer-display.warn { color: #d8b878; }
+  #timer-display.go { color: #d87878; }
+  #timer-display.done { color: #6fa06f; }
+  #timer-subtext {
+    font-size: 1.4rem; color: #8a8475; margin-bottom: 4vh; text-align: center;
+  }
+  #timer-buttons { display: flex; gap: 1.5vw; }
+  #timer-buttons button {
+    background: #1a1a18; color: #e8e4d8; border: 1px solid #3a3a36;
+    padding: 1.6vh 3vw; font-size: 1.3rem; font-family: inherit;
+    letter-spacing: 0.12em; cursor: pointer; border-radius: 4px;
+  }
+  #timer-buttons button:hover, #timer-buttons button:focus {
+    border-color: #b8a878; outline: none;
+  }
+
+  /* WISDOM */
+  #wisdom-section {
+    font-size: 1.2rem; color: #6f7a6f; margin-top: 6vh;
+    letter-spacing: 0.06em; text-align: center;
+  }
+  #wisdom-section strong { color: #b8a878; font-weight: 400; }
+
+  /* RESPONSIVE: phone */
+  @media (max-width: 1100px) {
+    #reading-ref { font-size: 3.4rem; }
+    #devotional-body p { font-size: 1.3rem; }
+    #devotional-body h3 { font-size: 1rem; }
+    .opening { font-size: 1.15rem; }
+    .reflect-short { font-size: 1.35rem; }
+    #workout-title { font-size: 2.4rem; }
+    .ex-name { font-size: 1.6rem; }
+    .mob-name { font-size: 1.4rem; }
+    #timer-display { font-size: 8rem; }
+    #topbar { font-size: 1rem; }
+    .ex-weight-row { gap: 3vw; }
+    .weight-input { width: 7rem; font-size: 1.3rem; }
+    .mic-btn { width: 2.8rem; height: 2.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<header id="topbar">
+  <div id="date">—</div>
+  <div id="session-clock" class="hidden">00:00</div>
+  <div id="clock">—</div>
+</header>
+
+<!-- DEVOTIONAL -->
+<section id="devotional-section">
+  <div class="label">Scripture &middot; ESV Study Bible</div>
+  <h1 id="reading-ref">—</h1>
+  <p id="reading-opening" class="opening">—</p>
+  <div id="devotional-body"></div>
+  <button id="begin-btn" class="begin-btn" onclick="beginSession()">Begin session →</button>
+</section>
+
+<hr class="section-rule">
+
+<!-- MOBILITY -->
+<section id="mobility-section">
+  <div class="label">Mobility reset</div>
+  <ol id="mobility-list"></ol>
+</section>
+
+<hr class="section-rule">
+
+<!-- WORKOUT -->
+<section id="workout-section">
+  <div class="label">Today's workout</div>
+  <h2 id="workout-title">—</h2>
+  <div id="workout-list"></div>
+</section>
+
+<div id="wisdom-section">
+  Wisdom for today &middot; <strong id="proverb-ref">—</strong>
+</div>
+
+<!-- TIMER OVERLAY -->
+<div id="timer-overlay" class="hidden">
+  <div id="timer-name">—</div>
+  <div id="timer-display">0:00</div>
+  <div id="timer-subtext"></div>
+  <div id="timer-buttons">
+    <button id="timer-toggle" onclick="toggleTimer()">Start</button>
+    <button onclick="closeTimer(true)">Done ✓</button>
+    <button onclick="closeTimer(false)">Close</button>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────
+//  SAFE STORAGE — works even when localStorage is blocked
+// ─────────────────────────────────────────────────────
+var _mem = {};
+var ST = {
+  get: function(k){ try{ return localStorage.getItem(k); }catch(e){ return _mem[k]||null; } },
+  set: function(k,v){ try{ localStorage.setItem(k,v); }catch(e){ _mem[k]=v; } }
+};
+
+// Weight history is shared with dad-athlete-dashboard.html (same key)
+var DB = {
+  weights: function(){ try{ return JSON.parse(ST.get('dad_weights')||'{}'); }catch(e){ return {}; } },
+  saveWeights: function(w){ ST.set('dad_weights', JSON.stringify(w)); },
+  lastWeight: function(name){
+    var w = this.weights(); var h = w[name];
+    return (h && h.length) ? h[h.length-1] : null;
+  },
+  logWeight: function(name, weight, date){
+    var w = this.weights();
+    if (!w[name]) w[name] = [];
+    w[name].push({ date: date, weight: parseFloat(weight)||0 });
+    if (w[name].length > 30) w[name] = w[name].slice(-30);
+    this.saveWeights(w);
+  }
+};
+
+function todayISO(){ return new Date().toISOString().split('T')[0]; }
+
+// ─────────────────────────────────────────────────────
+//  DATE / CLOCK
+// ─────────────────────────────────────────────────────
+function todayLocal(){ var d=new Date(); d.setHours(0,0,0,0); return d; }
+function fmtDate(d){ return d.toLocaleDateString('en-US',{ weekday:'long', month:'long', day:'numeric' }); }
+function fmtClock(d){
+  var h=d.getHours(), m=d.getMinutes(); var am=h<12; var hh=((h+11)%12)+1;
+  return hh+':'+(m<10?'0':'')+m+(am?'a':'p');
+}
+function fmtMS(secs){
+  var m=Math.floor(secs/60), s=secs%60;
+  return m+':'+(s<10?'0':'')+s;
+}
+
+// Anchor: Tue May 19 2026 = Romans 1. Tomorrow rolls to Romans 2.
+// To re-anchor, change this date.
+var START_DATE = new Date(2026, 4, 19);
+START_DATE.setHours(0,0,0,0);
+function daysSinceStart(){
+  return Math.floor((todayLocal() - START_DATE) / 86400000);
+}
+
+// ─────────────────────────────────────────────────────
+//  READINGS — 28-day cycle: Romans 1-16 → Ecclesiastes 1-12.
+//  Rich entries use `sections: [{h, body}]` (and optional `verse`).
+//  Short entries use `reflect: "..."` and will be deepened over time.
+// ─────────────────────────────────────────────────────
+var READINGS = [
+  // ── ROMANS ─────────────────────────────────────────
+  { ref:"Romans 1",
+    open:"Paul, a servant of Christ Jesus, called to be an apostle, set apart for the gospel of God.",
+    verse:"“Claiming to be wise, they became fools.” (Romans 1:22)",
+    sections:[
+      { h:"What's happening in Romans 1",
+        body:"Paul opens his most theologically dense letter with a setup, not a target. He's building toward the argument that every person — moral, intellectual, religious, strategic — needs grace. So he starts wide: humanity suppresses what it knows about God and trades worship of the Creator for worship of created things. Then he traces what happens downstream when that trade is made. The chapter can feel harsh in places, but Paul is not pointing at \"them out there.\" He's leveling the playing field so that by Romans 3 nobody is left standing on their own." },
+      { h:"Important theme",
+        body:"Disorder begins with worship disorder. The chapter says it three times in different words — they exchanged the truth for a lie, the glory of the immortal God for images of created things, the natural for the unnatural. The point is structural: what you orient your life around shapes everything downstream of it. Get the center wrong and the edges go crooked. Get the center right and the edges have something to align to." },
+      { h:"Why this matters for you",
+        body:"You are actively building. Systems. Identity. Discipline. Autonomy. Financial structures. Physical capability. A future leadership position. None of those are bad — they are mostly good. The danger Romans 1 names for an INTJ-9 builder is not recklessness or moral collapse. It is that any of those good things can quietly slide into the center of your life and become the thing you actually trust. Competence becomes self-salvation. Strategy becomes pride. Autonomy becomes isolation. Mastery becomes identity. The system you're building is meant to serve a center; it cannot be the center. If you let it become the center, it will not warn you — it will just slowly hollow you out while you still look like you're winning." },
+      { h:"Important balance",
+        body:"Don't read this chapter as ammunition. A lot of modern \"masculine\" content turns Romans 1 into \"we are the righteous few in a degenerate culture.\" That misses Paul's larger move entirely — Romans 2 immediately turns and says, and you who judge are also guilty. This chapter is not for sorting humanity into the awake and the asleep. It is for dismantling the very instinct in you that wants to do that sorting. Especially the analytical instinct. INTJs build the sharpest categories; Paul takes the categories away." },
+      { h:"Most relevant verse for you",
+        body:"Your temptation is not recklessness. Your temptation is believing intelligence, competence, and control can ultimately secure your life. Romans 1 destabilizes that idea — in a healthy way, before grace shows up in chapter 3 to give you something better to rest on." }
+    ]
+  },
+  { ref:"Romans 2",
+    open:"Do you presume on the riches of his kindness and forbearance and patience, not knowing that God's kindness is meant to lead you to repentance?",
+    verse:"“Or do you presume on the riches of his kindness and forbearance and patience, not knowing that God's kindness is meant to lead you to repentance?” (Romans 2:4)",
+    sections:[
+      { h:"What's happening in Romans 2",
+        body:"Right after the harsh-sounding catalog of chapter 1, Paul wheels. He turns to the religious, the moral, the disciplined — the people who would have nodded along through chapter 1 — and puts them under the same indictment: in passing judgment on another you condemn yourself, because you, the judge, practice the very same things. Then he reframes God's posture entirely. Not pressure. Not threat. Kindness, meant to lead to repentance. The chapter develops two ideas in parallel: God's judgment is impartial, and the real insider — the real one of God's people — is the one whose heart is changed inwardly, not whose outward markers are correct." },
+      { h:"Important theme",
+        body:"Outward markers do not equal inward reality, and kindness is the actual mechanism God uses to move you. We tend to imagine God as either pressuring us or evaluating us. Paul says no — God's kindness is what changes people. That's not soft theology; it's structural. The same God who judges impartially is patient on purpose. He is not weighing whether you've performed; he is drawing you back to him by being kinder than your performance deserves." },
+      { h:"Why this matters for you",
+        body:"Two things land hard for an INTJ-9 builder. First: you build systems, and you can measure your own life by the outward markers — discipline, workouts shipped, scripture read, hours worked, the optics of \"doing it right.\" Romans 2 isn't asking you to stop doing those things. It is asking you to notice when the markers have replaced the relationship. The disciplined Pharisee was not condemned for being disciplined. He was condemned for thinking the discipline was the point. Second: the 9 in you expects God to be quietly disappointed. The INTJ in you expects God to operate on logic and merit. Paul's actual claim is that the way God moves you is kinder than either of those expectations. Re-set your morning around that. You are not being pressured into this day. You are being met inside it." },
+      { h:"Important balance",
+        body:"Don't twist kindness into permission. Paul is not saying God doesn't really care what you do. Read verses 6 through 10 carefully — there is real consequence in this chapter. Kindness is the mechanism of change, not the absence of standard. It is the path, not the destination. The error in one direction is religious anxiety; the error in the other is moral drift. Romans is going to spend sixteen chapters threading that needle. Today, just notice the first stitch: he is kinder than you expect, and that kindness is me
