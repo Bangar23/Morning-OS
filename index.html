@@ -7,74 +7,75 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#0a0a0a;color:#e8e4d8;font-family:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;-webkit-font-smoothing:antialiased;min-height:100vh}
-body{padding:3vh 6vw 14vh 6vw;max-width:1600px;margin:0 auto;line-height:1.5}
+body{padding:3vh 2.5vw 14vh 2.5vw;margin:0 auto;line-height:1.5}
 .hidden{display:none!important}
-#topbar{display:flex;justify-content:space-between;align-items:baseline;font-size:1.4rem;color:#6f7a6f;letter-spacing:.06em;margin-bottom:4vh;font-variant-numeric:tabular-nums;border-bottom:1px solid #1c1c1a;padding-bottom:2vh}
+#topbar{display:flex;justify-content:space-between;align-items:baseline;font-size:1.9rem;color:#6f7a6f;letter-spacing:.06em;margin-bottom:4vh;font-variant-numeric:tabular-nums;border-bottom:1px solid #1c1c1a;padding-bottom:2vh}
 #session-clock{color:#b8a878;font-weight:600}
-.label{font-size:1.05rem;text-transform:uppercase;letter-spacing:.4em;color:#b8a878;margin-bottom:1.5vh}
+.label{font-size:1.4rem;text-transform:uppercase;letter-spacing:.4em;color:#b8a878;margin-bottom:1.5vh}
 #devotional-section{margin-bottom:7vh}
-#reading-ref{font-size:5.2rem;font-weight:400;line-height:1.05;margin-bottom:1.2vh;letter-spacing:-.01em}
-.opening{font-size:1.4rem;color:#7a7568;font-style:italic;margin-bottom:3.5vh;max-width:64ch}
-#devotional-body{max-width:64ch}
-#devotional-body h3{font-size:1.2rem;text-transform:uppercase;letter-spacing:.28em;color:#b8a878;font-weight:500;margin:4vh 0 1.5vh 0}
-#devotional-body p{font-size:1.7rem;line-height:1.55;color:#e8e4d8;margin-bottom:1.5vh}
-.verse{font-size:1.55rem;color:#c8c2b0;font-style:italic;border-left:3px solid #3a3a36;padding:.5vh 0 .5vh 1.5vw;margin:2vh 0;max-width:60ch}
-.reflect-short{font-size:1.95rem;line-height:1.55;color:#e8e4d8;max-width:56ch}
-.begin-btn{background:#1a1a18;color:#e8e4d8;border:1px solid #3a3a36;padding:1.8vh 3vw;font-size:1.4rem;font-family:inherit;letter-spacing:.12em;cursor:pointer;border-radius:4px;margin-top:3vh}
+#reading-ref{font-size:7.5rem;font-weight:400;line-height:1.05;margin-bottom:1.2vh;letter-spacing:-.01em}
+.opening{font-size:2rem;color:#7a7568;font-style:italic;margin-bottom:3.5vh;max-width:2400px}
+#devotional-body{max-width:2400px;font-size:2.4rem}
+#devotional-body h3{font-size:1.6rem;text-transform:uppercase;letter-spacing:.28em;color:#b8a878;font-weight:500;margin:4vh 0 1.5vh 0}
+#devotional-body p{font-size:2.4rem;line-height:1.55;color:#e8e4d8;margin-bottom:1.8vh}
+.verse{font-size:2.1rem;color:#c8c2b0;font-style:italic;border-left:3px solid #3a3a36;padding:.5vh 0 .5vh 1.5vw;margin:2vh 0;max-width:2200px}
+.reflect-short{font-size:2.6rem;line-height:1.55;color:#e8e4d8;max-width:2400px}
+.begin-btn{background:#1a1a18;color:#e8e4d8;border:1px solid #3a3a36;padding:1.8vh 3vw;font-size:1.8rem;font-family:inherit;letter-spacing:.12em;cursor:pointer;border-radius:4px;margin-top:3vh}
 .begin-btn:hover,.begin-btn:focus{background:#2a2a26;border-color:#b8a878;outline:none}
 .section-rule{border:none;border-top:1px solid #1c1c1a;margin:6vh 0 5vh 0}
 #mobility-section{margin-bottom:7vh}
-#mobility-list{list-style:none}
+#mobility-list{list-style:none;max-width:2400px}
 .mob-row{display:flex;align-items:center;justify-content:space-between;padding:2.2vh 0;border-bottom:1px solid #1c1c1a;gap:2vw}
 .mob-row:last-child{border-bottom:none}
 .mob-left{flex:1}
-.mob-name{font-size:2rem;color:#e8e4d8;margin-bottom:.3vh}
-.mob-dose{font-size:1.3rem;color:#8a8475;font-style:italic}
+.mob-name{font-size:2.6rem;color:#e8e4d8;margin-bottom:.4vh}
+.mob-dose{font-size:1.7rem;color:#8a8475;font-style:italic}
 .mob-row.done .mob-name{color:#6f7a6f;text-decoration:line-through}
-.mob-btn,.set-btn{background:#1a1a18;color:#e8e4d8;border:1px solid #3a3a36;padding:1.2vh 2vw;font-size:1.2rem;font-family:inherit;letter-spacing:.1em;cursor:pointer;border-radius:4px;min-width:9vw}
+.mob-btn,.set-btn{background:#1a1a18;color:#e8e4d8;border:1px solid #3a3a36;padding:1.2vh 2vw;font-size:1.6rem;font-family:inherit;letter-spacing:.1em;cursor:pointer;border-radius:4px;min-width:9vw}
 .mob-btn:hover,.mob-btn:focus,.set-btn:hover,.set-btn:focus{border-color:#b8a878;outline:none}
 .mob-btn.done,.set-btn.complete{background:#1f2a1f;color:#6fa06f;border-color:#2a3a2a}
 #workout-section{margin-bottom:6vh}
-#workout-title{font-size:3.8rem;font-weight:400;margin-bottom:4vh;letter-spacing:-.01em}
+#workout-list{max-width:2400px}
+#workout-title{font-size:5.2rem;font-weight:400;margin-bottom:4vh;letter-spacing:-.01em}
 .ex-card{border-top:1px solid #1c1c1a;padding:3vh 0 2.5vh 0}
 .ex-card:last-child{border-bottom:1px solid #1c1c1a}
-.ex-name{font-size:2.4rem;margin-bottom:.8vh;line-height:1.15}
-.ex-meta{font-size:1.3rem;color:#8a8475;margin-bottom:1.5vh;font-variant-numeric:tabular-nums}
+.ex-name{font-size:3.1rem;margin-bottom:.8vh;line-height:1.15}
+.ex-meta{font-size:1.8rem;color:#8a8475;margin-bottom:1.5vh;font-variant-numeric:tabular-nums}
 .ex-meta .sep{color:#3a3a36;margin:0 .6em}
 .ex-weight-row{display:flex;align-items:center;gap:1.2vw;margin:1.5vh 0;flex-wrap:wrap}
-.last-weight{font-size:1.3rem;color:#8a8475}
+.last-weight{font-size:1.7rem;color:#8a8475}
 .last-weight strong{color:#b8a878;font-weight:500}
-.weight-input{background:#151513;border:1px solid #3a3a36;color:#e8e4d8;padding:1vh 1.2vw;font-size:1.6rem;font-family:inherit;border-radius:4px;width:9rem;font-variant-numeric:tabular-nums}
+.weight-input{background:#151513;border:1px solid #3a3a36;color:#e8e4d8;padding:1vh 1.2vw;font-size:2rem;font-family:inherit;border-radius:4px;width:10rem;font-variant-numeric:tabular-nums}
 .weight-input:focus{border-color:#b8a878;outline:none}
 .mic-btn{background:#1a1a18;color:#e8e4d8;border:1px solid #3a3a36;width:3.4rem;height:3.4rem;font-size:1.4rem;cursor:pointer;border-radius:50%;font-family:inherit}
 .mic-btn:hover,.mic-btn:focus{border-color:#b8a878;outline:none}
 .mic-btn.listening{background:#3a1f1f;border-color:#c87878}
 .set-dots{display:flex;gap:.6vw;margin:1.5vh 0}
-.set-dot{width:1.8rem;height:1.8rem;border-radius:50%;background:#1a1a18;border:2px solid #3a3a36}
+.set-dot{width:2.2rem;height:2.2rem;border-radius:50%;background:#1a1a18;border:2px solid #3a3a36}
 .set-dot.done{background:#2a4a2a;border-color:#6fa06f}
 .set-dot.current{border-color:#b8a878}
-.set-btn{padding:1.4vh 2.5vw;font-size:1.3rem;margin-top:1vh}
-.ex-cues{margin-top:1.5vh;max-width:60ch}
-.ex-cue{font-size:1.25rem;color:#8a8475;line-height:1.5;margin-bottom:.5vh}
+.set-btn{padding:1.4vh 2.5vw;font-size:1.6rem;margin-top:1vh}
+.ex-cues{margin-top:1.5vh;max-width:2200px;font-size:1.6rem}
+.ex-cue{font-size:1.6rem;color:#8a8475;line-height:1.55;margin-bottom:.7vh}
 .ex-cue .cue-lbl{color:#b8a878;font-variant:small-caps;letter-spacing:.1em;margin-right:.4em}
 .ex-card.done{opacity:.55}
 #timer-overlay{position:fixed;inset:0;background:rgba(10,10,10,.97);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4vh}
-#timer-name{font-size:1.8rem;color:#b8a878;letter-spacing:.1em;margin-bottom:3vh;text-align:center;max-width:70ch}
+#timer-name{font-size:2.4rem;color:#b8a878;letter-spacing:.1em;margin-bottom:3vh;text-align:center;max-width:80ch}
 #timer-display{font-size:14rem;color:#e8e4d8;font-weight:300;font-variant-numeric:tabular-nums;line-height:1;letter-spacing:-.02em;margin-bottom:4vh}
 #timer-display.warn{color:#d8b878}
 #timer-display.go{color:#d87878}
 #timer-display.done{color:#6fa06f}
 #timer-buttons{display:flex;gap:1.5vw}
-#timer-buttons button{background:#1a1a18;color:#e8e4d8;border:1px solid #3a3a36;padding:1.6vh 3vw;font-size:1.3rem;font-family:inherit;letter-spacing:.12em;cursor:pointer;border-radius:4px}
+#timer-buttons button{background:#1a1a18;color:#e8e4d8;border:1px solid #3a3a36;padding:1.6vh 3vw;font-size:1.7rem;font-family:inherit;letter-spacing:.12em;cursor:pointer;border-radius:4px}
 #timer-buttons button:hover,#timer-buttons button:focus{border-color:#b8a878;outline:none}
 #wisdom-section{font-size:1.2rem;color:#6f7a6f;margin-top:6vh;letter-spacing:.06em;text-align:center}
 #wisdom-section strong{color:#b8a878;font-weight:400}
 .step{display:none}.step.active{display:block}
-.back-btn{background:transparent;color:#6f7a6f;border:none;padding:1vh 0;font-size:1.1rem;font-family:inherit;cursor:pointer;letter-spacing:.08em;margin-bottom:3vh}
+.back-btn{background:transparent;color:#6f7a6f;border:none;padding:1vh 0;font-size:1.5rem;font-family:inherit;cursor:pointer;letter-spacing:.08em;margin-bottom:3vh}
 .back-btn:hover,.back-btn:focus{color:#b8a878;outline:none}
-.proverb-ref{font-size:1.5rem;color:#b8a878;margin-bottom:1.2vh;font-style:italic}
-.proverb-text{font-size:1.7rem;color:#c8c2b0;line-height:1.55;font-style:italic;max-width:64ch}
-@media(max-width:1100px){#reading-ref{font-size:3.4rem}#devotional-body p{font-size:1.3rem}#devotional-body h3{font-size:1rem}.opening{font-size:1.15rem}.reflect-short{font-size:1.35rem}#workout-title{font-size:2.4rem}.ex-name{font-size:1.6rem}.mob-name{font-size:1.4rem}#timer-display{font-size:8rem}#topbar{font-size:1rem}}
+.proverb-ref{font-size:2rem;color:#b8a878;margin-bottom:1.5vh;font-style:italic}
+.proverb-text{font-size:2.3rem;color:#c8c2b0;line-height:1.55;font-style:italic;max-width:2400px}
+@media(max-width:1100px){body{padding:3vh 5vw 10vh 5vw}#reading-ref{font-size:3.4rem}#devotional-body p{font-size:1.3rem}#devotional-body h3{font-size:1rem}.opening{font-size:1.15rem}.reflect-short{font-size:1.35rem}#workout-title{font-size:2.4rem}.ex-name{font-size:1.6rem}.mob-name{font-size:1.4rem}#timer-display{font-size:8rem}#topbar{font-size:1rem}}
 </style>
 </head>
 <body>
