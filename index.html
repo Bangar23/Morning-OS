@@ -5,350 +5,526 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Morning</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body {
-    background: #0a0a0a;
-    color: #e8e4d8;
-    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    min-height: 100vh;
-  }
-  body { padding: 3vh 6vw 14vh 6vw; max-width: 1600px; margin: 0 auto; line-height: 1.5; }
-  .hidden { display: none !important; }
-
-  /* TOP BAR */
-  #topbar {
-    display: flex; justify-content: space-between; align-items: baseline;
-    font-size: 1.4rem; color: #6f7a6f; letter-spacing: 0.06em;
-    margin-bottom: 4vh; font-variant-numeric: tabular-nums;
-    border-bottom: 1px solid #1c1c1a; padding-bottom: 2vh;
-  }
-  #session-clock { color: #b8a878; font-weight: 600; }
-
-  /* LABELS */
-  .label {
-    font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.4em;
-    color: #b8a878; margin-bottom: 1.5vh;
-  }
-
-  /* DEVOTIONAL */
-  #devotional-section { margin-bottom: 7vh; }
-  #reading-ref {
-    font-size: 5.2rem; font-weight: 400; line-height: 1.05;
-    margin-bottom: 1.2vh; letter-spacing: -0.01em;
-  }
-  .opening {
-    font-size: 1.4rem; color: #7a7568; font-style: italic;
-    margin-bottom: 3.5vh; max-width: 64ch;
-  }
-  #devotional-body { max-width: 64ch; }
-  #devotional-body h3 {
-    font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.28em;
-    color: #b8a878; font-weight: 500;
-    margin: 4vh 0 1.5vh 0;
-  }
-  #devotional-body p {
-    font-size: 1.7rem; line-height: 1.55; color: #e8e4d8;
-    margin-bottom: 1.5vh;
-  }
-  #devotional-body .verse {
-    font-size: 1.55rem; color: #c8c2b0; font-style: italic;
-    border-left: 3px solid #3a3a36; padding: 0.5vh 0 0.5vh 1.5vw;
-    margin: 2vh 0; max-width: 60ch;
-  }
-  .reflect-short {
-    font-size: 1.95rem; line-height: 1.55; color: #e8e4d8; max-width: 56ch;
-  }
-
-  /* BEGIN BUTTON */
-  .begin-btn {
-    background: #1a1a18; color: #e8e4d8; border: 1px solid #3a3a36;
-    padding: 1.8vh 3vw; font-size: 1.4rem; font-family: inherit;
-    letter-spacing: 0.12em; cursor: pointer; border-radius: 4px;
-    margin-top: 3vh;
-  }
-  .begin-btn:hover, .begin-btn:focus { background: #2a2a26; border-color: #b8a878; outline: none; }
-
-  /* SECTION DIVIDER */
-  .section-rule { border: none; border-top: 1px solid #1c1c1a; margin: 6vh 0 5vh 0; }
-
-  /* MOBILITY */
-  #mobility-section { margin-bottom: 7vh; }
-  #mobility-list { list-style: none; counter-reset: mob; }
-  .mob-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 2.2vh 0; border-bottom: 1px solid #1c1c1a; gap: 2vw;
-  }
-  .mob-row:last-child { border-bottom: none; }
-  .mob-left { flex: 1; }
-  .mob-name {
-    font-size: 2rem; color: #e8e4d8; margin-bottom: 0.3vh;
-  }
-  .mob-dose { font-size: 1.3rem; color: #8a8475; font-style: italic; }
-  .mob-row.done .mob-name { color: #6f7a6f; text-decoration: line-through; }
-  .mob-btn {
-    background: #1a1a18; color: #e8e4d8; border: 1px solid #3a3a36;
-    padding: 1.2vh 2vw; font-size: 1.2rem; font-family: inherit;
-    letter-spacing: 0.1em; cursor: pointer; border-radius: 4px; min-width: 9vw;
-  }
-  .mob-btn:hover, .mob-btn:focus { border-color: #b8a878; outline: none; }
-  .mob-btn.done { background: #1f2a1f; color: #6fa06f; border-color: #2a3a2a; }
-
-  /* WORKOUT */
-  #workout-section { margin-bottom: 6vh; }
-  #workout-title {
-    font-size: 3.8rem; font-weight: 400; margin-bottom: 4vh; letter-spacing: -0.01em;
-  }
-  .ex-card {
-    border-top: 1px solid #1c1c1a; padding: 3vh 0 2.5vh 0;
-  }
-  .ex-card:last-child { border-bottom: 1px solid #1c1c1a; }
-  .ex-name { font-size: 2.4rem; margin-bottom: 0.8vh; line-height: 1.15; }
-  .ex-meta {
-    font-size: 1.3rem; color: #8a8475; margin-bottom: 1.5vh;
-    font-variant-numeric: tabular-nums;
-  }
-  .ex-meta .sep { color: #3a3a36; margin: 0 0.6em; }
-  .ex-weight-row {
-    display: flex; align-items: center; gap: 1.2vw; margin: 1.5vh 0;
-    flex-wrap: wrap;
-  }
-  .last-weight {
-    font-size: 1.3rem; color: #8a8475;
-  }
-  .last-weight strong { color: #b8a878; font-weight: 500; }
-  .weight-input {
-    background: #151513; border: 1px solid #3a3a36; color: #e8e4d8;
-    padding: 1vh 1.2vw; font-size: 1.6rem; font-family: inherit;
-    border-radius: 4px; width: 9rem; font-variant-numeric: tabular-nums;
-  }
-  .weight-input:focus { border-color: #b8a878; outline: none; }
-  .mic-btn {
-    background: #1a1a18; color: #e8e4d8; border: 1px solid #3a3a36;
-    width: 3.4rem; height: 3.4rem; font-size: 1.4rem; cursor: pointer;
-    border-radius: 50%; font-family: inherit;
-  }
-  .mic-btn:hover, .mic-btn:focus { border-color: #b8a878; outline: none; }
-  .mic-btn.listening { background: #3a1f1f; border-color: #c87878; }
-  .set-dots {
-    display: flex; gap: 0.6vw; margin: 1.5vh 0;
-  }
-  .set-dot {
-    width: 1.8rem; height: 1.8rem; border-radius: 50%;
-    background: #1a1a18; border: 2px solid #3a3a36;
-  }
-  .set-dot.done { background: #2a4a2a; border-color: #6fa06f; }
-  .set-dot.current { border-color: #b8a878; }
-  .set-btn {
-    background: #1a1a18; color: #e8e4d8; border: 1px solid #3a3a36;
-    padding: 1.4vh 2.5vw; font-size: 1.3rem; font-family: inherit;
-    letter-spacing: 0.1em; cursor: pointer; border-radius: 4px;
-    margin-top: 1vh;
-  }
-  .set-btn:hover, .set-btn:focus { border-color: #b8a878; outline: none; }
-  .set-btn.complete { background: #1f2a1f; color: #6fa06f; border-color: #2a3a2a; }
-  .ex-cues { margin-top: 1.5vh; max-width: 60ch; }
-  .ex-cue {
-    font-size: 1.25rem; color: #8a8475; line-height: 1.5;
-    margin-bottom: 0.5vh;
-  }
-  .ex-cue .cue-lbl {
-    color: #b8a878; font-variant: small-caps; letter-spacing: 0.1em;
-    margin-right: 0.4em;
-  }
-  .ex-card.done { opacity: 0.55; }
-  .ex-card.current { /* could highlight; keep minimal for now */ }
-
-  /* TIMER OVERLAY */
-  #timer-overlay {
-    position: fixed; inset: 0; background: rgba(10,10,10,0.97);
-    z-index: 100; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; padding: 4vh;
-  }
-  #timer-name {
-    font-size: 1.8rem; color: #b8a878; letter-spacing: 0.1em;
-    margin-bottom: 3vh; text-align: center; max-width: 70ch;
-  }
-  #timer-display {
-    font-size: 14rem; color: #e8e4d8; font-weight: 300;
-    font-variant-numeric: tabular-nums; line-height: 1;
-    letter-spacing: -0.02em; margin-bottom: 4vh;
-  }
-  #timer-display.warn { color: #d8b878; }
-  #timer-display.go { color: #d87878; }
-  #timer-display.done { color: #6fa06f; }
-  #timer-subtext {
-    font-size: 1.4rem; color: #8a8475; margin-bottom: 4vh; text-align: center;
-  }
-  #timer-buttons { display: flex; gap: 1.5vw; }
-  #timer-buttons button {
-    background: #1a1a18; color: #e8e4d8; border: 1px solid #3a3a36;
-    padding: 1.6vh 3vw; font-size: 1.3rem; font-family: inherit;
-    letter-spacing: 0.12em; cursor: pointer; border-radius: 4px;
-  }
-  #timer-buttons button:hover, #timer-buttons button:focus {
-    border-color: #b8a878; outline: none;
-  }
-
-  /* WISDOM */
-  #wisdom-section {
-    font-size: 1.2rem; color: #6f7a6f; margin-top: 6vh;
-    letter-spacing: 0.06em; text-align: center;
-  }
-  #wisdom-section strong { color: #b8a878; font-weight: 400; }
-
-  /* RESPONSIVE: phone */
-  @media (max-width: 1100px) {
-    #reading-ref { font-size: 3.4rem; }
-    #devotional-body p { font-size: 1.3rem; }
-    #devotional-body h3 { font-size: 1rem; }
-    .opening { font-size: 1.15rem; }
-    .reflect-short { font-size: 1.35rem; }
-    #workout-title { font-size: 2.4rem; }
-    .ex-name { font-size: 1.6rem; }
-    .mob-name { font-size: 1.4rem; }
-    #timer-display { font-size: 8rem; }
-    #topbar { font-size: 1rem; }
-    .ex-weight-row { gap: 3vw; }
-    .weight-input { width: 7rem; font-size: 1.3rem; }
-    .mic-btn { width: 2.8rem; height: 2.8rem; }
-  }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0a0a0a;color:#e8e4d8;font-family:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+body{padding:3vh 6vw 14vh 6vw;max-width:1600px;margin:0 auto;line-height:1.5}
+.hidden{display:none!important}
+#topbar{display:flex;justify-content:space-between;align-items:baseline;font-size:1.4rem;color:#6f7a6f;letter-spacing:.06em;margin-bottom:4vh;font-variant-numeric:tabular-nums;border-bottom:1px solid #1c1c1a;padding-bottom:2vh}
+#session-clock{color:#b8a878;font-weight:600}
+.label{font-size:1.05rem;text-transform:uppercase;letter-spacing:.4em;color:#b8a878;margin-bottom:1.5vh}
+#devotional-section{margin-bottom:7vh}
+#reading-ref{font-size:5.2rem;font-weight:400;line-height:1.05;margin-bottom:1.2vh;letter-spacing:-.01em}
+.opening{font-size:1.4rem;color:#7a7568;font-style:italic;margin-bottom:3.5vh;max-width:64ch}
+#devotional-body{max-width:64ch}
+#devotional-body h3{font-size:1.2rem;text-transform:uppercase;letter-spacing:.28em;color:#b8a878;font-weight:500;margin:4vh 0 1.5vh 0}
+#devotional-body p{font-size:1.7rem;line-height:1.55;color:#e8e4d8;margin-bottom:1.5vh}
+.verse{font-size:1.55rem;color:#c8c2b0;font-style:italic;border-left:3px solid #3a3a36;padding:.5vh 0 .5vh 1.5vw;margin:2vh 0;max-width:60ch}
+.reflect-short{font-size:1.95rem;line-height:1.55;color:#e8e4d8;max-width:56ch}
+.begin-btn{background:#1a1a18;color:#e8e4d8;border:1px solid #3a3a36;padding:1.8vh 3vw;font-size:1.4rem;font-family:inherit;letter-spacing:.12em;cursor:pointer;border-radius:4px;margin-top:3vh}
+.begin-btn:hover,.begin-btn:focus{background:#2a2a26;border-color:#b8a878;outline:none}
+.section-rule{border:none;border-top:1px solid #1c1c1a;margin:6vh 0 5vh 0}
+#mobility-section{margin-bottom:7vh}
+#mobility-list{list-style:none}
+.mob-row{display:flex;align-items:center;justify-content:space-between;padding:2.2vh 0;border-bottom:1px solid #1c1c1a;gap:2vw}
+.mob-row:last-child{border-bottom:none}
+.mob-left{flex:1}
+.mob-name{font-size:2rem;color:#e8e4d8;margin-bottom:.3vh}
+.mob-dose{font-size:1.3rem;color:#8a8475;font-style:italic}
+.mob-row.done .mob-name{color:#6f7a6f;text-decoration:line-through}
+.mob-btn,.set-btn{background:#1a1a18;color:#e8e4d8;border:1px solid #3a3a36;padding:1.2vh 2vw;font-size:1.2rem;font-family:inherit;letter-spacing:.1em;cursor:pointer;border-radius:4px;min-width:9vw}
+.mob-btn:hover,.mob-btn:focus,.set-btn:hover,.set-btn:focus{border-color:#b8a878;outline:none}
+.mob-btn.done,.set-btn.complete{background:#1f2a1f;color:#6fa06f;border-color:#2a3a2a}
+#workout-section{margin-bottom:6vh}
+#workout-title{font-size:3.8rem;font-weight:400;margin-bottom:4vh;letter-spacing:-.01em}
+.ex-card{border-top:1px solid #1c1c1a;padding:3vh 0 2.5vh 0}
+.ex-card:last-child{border-bottom:1px solid #1c1c1a}
+.ex-name{font-size:2.4rem;margin-bottom:.8vh;line-height:1.15}
+.ex-meta{font-size:1.3rem;color:#8a8475;margin-bottom:1.5vh;font-variant-numeric:tabular-nums}
+.ex-meta .sep{color:#3a3a36;margin:0 .6em}
+.ex-weight-row{display:flex;align-items:center;gap:1.2vw;margin:1.5vh 0;flex-wrap:wrap}
+.last-weight{font-size:1.3rem;color:#8a8475}
+.last-weight strong{color:#b8a878;font-weight:500}
+.weight-input{background:#151513;border:1px solid #3a3a36;color:#e8e4d8;padding:1vh 1.2vw;font-size:1.6rem;font-family:inherit;border-radius:4px;width:9rem;font-variant-numeric:tabular-nums}
+.weight-input:focus{border-color:#b8a878;outline:none}
+.mic-btn{background:#1a1a18;color:#e8e4d8;border:1px solid #3a3a36;width:3.4rem;height:3.4rem;font-size:1.4rem;cursor:pointer;border-radius:50%;font-family:inherit}
+.mic-btn:hover,.mic-btn:focus{border-color:#b8a878;outline:none}
+.mic-btn.listening{background:#3a1f1f;border-color:#c87878}
+.set-dots{display:flex;gap:.6vw;margin:1.5vh 0}
+.set-dot{width:1.8rem;height:1.8rem;border-radius:50%;background:#1a1a18;border:2px solid #3a3a36}
+.set-dot.done{background:#2a4a2a;border-color:#6fa06f}
+.set-dot.current{border-color:#b8a878}
+.set-btn{padding:1.4vh 2.5vw;font-size:1.3rem;margin-top:1vh}
+.ex-cues{margin-top:1.5vh;max-width:60ch}
+.ex-cue{font-size:1.25rem;color:#8a8475;line-height:1.5;margin-bottom:.5vh}
+.ex-cue .cue-lbl{color:#b8a878;font-variant:small-caps;letter-spacing:.1em;margin-right:.4em}
+.ex-card.done{opacity:.55}
+#timer-overlay{position:fixed;inset:0;background:rgba(10,10,10,.97);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4vh}
+#timer-name{font-size:1.8rem;color:#b8a878;letter-spacing:.1em;margin-bottom:3vh;text-align:center;max-width:70ch}
+#timer-display{font-size:14rem;color:#e8e4d8;font-weight:300;font-variant-numeric:tabular-nums;line-height:1;letter-spacing:-.02em;margin-bottom:4vh}
+#timer-display.warn{color:#d8b878}
+#timer-display.go{color:#d87878}
+#timer-display.done{color:#6fa06f}
+#timer-buttons{display:flex;gap:1.5vw}
+#timer-buttons button{background:#1a1a18;color:#e8e4d8;border:1px solid #3a3a36;padding:1.6vh 3vw;font-size:1.3rem;font-family:inherit;letter-spacing:.12em;cursor:pointer;border-radius:4px}
+#timer-buttons button:hover,#timer-buttons button:focus{border-color:#b8a878;outline:none}
+#wisdom-section{font-size:1.2rem;color:#6f7a6f;margin-top:6vh;letter-spacing:.06em;text-align:center}
+#wisdom-section strong{color:#b8a878;font-weight:400}
+.step{display:none}.step.active{display:block}
+.back-btn{background:transparent;color:#6f7a6f;border:none;padding:1vh 0;font-size:1.1rem;font-family:inherit;cursor:pointer;letter-spacing:.08em;margin-bottom:3vh}
+.back-btn:hover,.back-btn:focus{color:#b8a878;outline:none}
+.proverb-ref{font-size:1.5rem;color:#b8a878;margin-bottom:1.2vh;font-style:italic}
+.proverb-text{font-size:1.7rem;color:#c8c2b0;line-height:1.55;font-style:italic;max-width:64ch}
+@media(max-width:1100px){#reading-ref{font-size:3.4rem}#devotional-body p{font-size:1.3rem}#devotional-body h3{font-size:1rem}.opening{font-size:1.15rem}.reflect-short{font-size:1.35rem}#workout-title{font-size:2.4rem}.ex-name{font-size:1.6rem}.mob-name{font-size:1.4rem}#timer-display{font-size:8rem}#topbar{font-size:1rem}}
 </style>
 </head>
 <body>
-
-<header id="topbar">
-  <div id="date">—</div>
-  <div id="session-clock" class="hidden">00:00</div>
-  <div id="clock">—</div>
-</header>
-
-<!-- DEVOTIONAL -->
-<section id="devotional-section">
+<header id="topbar"><div id="date">—</div><div id="session-clock" class="hidden">00:00</div><div id="clock">—</div></header>
+<section id="devotional-section" class="step active">
   <div class="label">Scripture &middot; ESV Study Bible</div>
   <h1 id="reading-ref">—</h1>
   <p id="reading-opening" class="opening">—</p>
   <div id="devotional-body"></div>
+  <div id="wisdom-block">
+    <div class="label" style="margin-top:6vh">Wisdom for today</div>
+    <div id="proverb-ref" class="proverb-ref">—</div>
+    <div id="proverb-text" class="proverb-text">—</div>
+  </div>
   <button id="begin-btn" class="begin-btn" onclick="beginSession()">Begin session →</button>
 </section>
-
-<hr class="section-rule">
-
-<!-- MOBILITY -->
-<section id="mobility-section">
+<section id="mobility-section" class="step">
+  <button class="back-btn" onclick="goToStep('devotional')">← devotional</button>
   <div class="label">Mobility reset</div>
   <ol id="mobility-list"></ol>
+  <button class="begin-btn" onclick="goToStep('workout')">Start workout →</button>
 </section>
-
-<hr class="section-rule">
-
-<!-- WORKOUT -->
-<section id="workout-section">
+<section id="workout-section" class="step">
+  <button class="back-btn" onclick="goToStep('mobility')">← mobility</button>
   <div class="label">Today's workout</div>
   <h2 id="workout-title">—</h2>
   <div id="workout-list"></div>
 </section>
-
-<div id="wisdom-section">
-  Wisdom for today &middot; <strong id="proverb-ref">—</strong>
-</div>
-
-<!-- TIMER OVERLAY -->
 <div id="timer-overlay" class="hidden">
   <div id="timer-name">—</div>
   <div id="timer-display">0:00</div>
-  <div id="timer-subtext"></div>
   <div id="timer-buttons">
     <button id="timer-toggle" onclick="toggleTimer()">Start</button>
     <button onclick="closeTimer(true)">Done ✓</button>
     <button onclick="closeTimer(false)">Close</button>
   </div>
 </div>
-
 <script>
-// ─────────────────────────────────────────────────────
-//  SAFE STORAGE — works even when localStorage is blocked
-// ─────────────────────────────────────────────────────
-var _mem = {};
-var ST = {
-  get: function(k){ try{ return localStorage.getItem(k); }catch(e){ return _mem[k]||null; } },
-  set: function(k,v){ try{ localStorage.setItem(k,v); }catch(e){ _mem[k]=v; } }
+var _mem={};
+var ST={get:function(k){try{return localStorage.getItem(k);}catch(e){return _mem[k]||null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){_mem[k]=v;}}};
+var DB={
+  weights:function(){try{return JSON.parse(ST.get('dad_weights')||'{}');}catch(e){return {};}},
+  saveWeights:function(w){ST.set('dad_weights',JSON.stringify(w));},
+  lastWeight:function(n){var w=this.weights(),h=w[n];return (h&&h.length)?h[h.length-1]:null;},
+  logWeight:function(n,wt,d){var w=this.weights();if(!w[n])w[n]=[];w[n].push({date:d,weight:parseFloat(wt)||0});if(w[n].length>30)w[n]=w[n].slice(-30);this.saveWeights(w);}
+};
+function todayISO(){return new Date().toISOString().split('T')[0];}
+function todayLocal(){var d=new Date();d.setHours(0,0,0,0);return d;}
+function fmtDate(d){return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});}
+function fmtClock(d){var h=d.getHours(),m=d.getMinutes(),am=h<12,hh=((h+11)%12)+1;return hh+':'+(m<10?'0':'')+m+(am?'a':'p');}
+function fmtMS(s){var m=Math.floor(s/60),x=s%60;return m+':'+(x<10?'0':'')+x;}
+var START_DATE=new Date(2026,4,19);START_DATE.setHours(0,0,0,0);
+function daysSinceStart(){return Math.floor((todayLocal()-START_DATE)/86400000);}
+
+var READINGS=[
+  {ref:"Romans 1",
+   open:"Paul, a servant of Christ Jesus, called to be an apostle, set apart for the gospel of God.",
+   verse:"“Claiming to be wise, they became fools.” (Romans 1:22)",
+   sections:[
+     {h:"What's happening in Romans 1",
+      body:"Paul opens his most theologically dense letter with a setup, not a target. He's building toward the argument that every person — moral, intellectual, religious, strategic — needs grace. So he starts wide: humanity suppresses what it knows about God and trades worship of the Creator for worship of created things. Then he traces what happens downstream when that trade is made. The chapter can feel harsh in places, but Paul is not pointing at “them out there.” He's leveling the playing field so that by Romans 3 nobody is left standing on their own."},
+     {h:"Important theme",
+      body:"Disorder begins with worship disorder. The chapter says it three times in different words — they exchanged the truth for a lie, the glory of the immortal God for images of created things, the natural for the unnatural. The point is structural: what you orient your life around shapes everything downstream of it. Get the center wrong and the edges go crooked. Get the center right and the edges have something to align to."},
+     {h:"Why this matters for you",
+      body:"You are actively building. Systems. Identity. Discipline. Autonomy. Financial structures. Physical capability. A future leadership position. None of those are bad — they are mostly good. The danger Romans 1 names for an INTJ-9 builder is not recklessness or moral collapse. It is that any of those good things can quietly slide into the center of your life and become the thing you actually trust. Competence becomes self-salvation. Strategy becomes pride. Autonomy becomes isolation. Mastery becomes identity. The system you're building is meant to serve a center; it cannot be the center. If you let it become the center, it will not warn you — it will just slowly hollow you out while you still look like you're winning."},
+     {h:"Important balance",
+      body:"Don't read this chapter as ammunition. A lot of modern “masculine” content turns Romans 1 into “we are the righteous few in a degenerate culture.” That misses Paul's larger move entirely — Romans 2 immediately turns and says, and you who judge are also guilty. This chapter is not for sorting humanity into the awake and the asleep. It is for dismantling the very instinct in you that wants to do that sorting. Especially the analytical instinct. INTJs build the sharpest categories; Paul takes the categories away."},
+     {h:"Most relevant verse for you",
+      body:"Your temptation is not recklessness. Your temptation is believing intelligence, competence, and control can ultimately secure your life. Romans 1 destabilizes that idea — in a healthy way, before grace shows up in chapter 3 to give you something better to rest on."}
+   ]},
+  {ref:"Romans 2",
+   open:"God's kindness is meant to lead you to repentance.",
+   verse:"“Or do you presume on the riches of his kindness and forbearance and patience, not knowing that God's kindness is meant to lead you to repentance?” (Romans 2:4)",
+   sections:[
+     {h:"What's happening in Romans 2",
+      body:"Right after the harsh-sounding catalog of chapter 1, Paul wheels. He turns to the religious, the moral, the disciplined — the people who would have nodded along through chapter 1 — and puts them under the same indictment: in passing judgment on another you condemn yourself, because you, the judge, practice the very same things. Then he reframes God's posture entirely. Not pressure. Not threat. Kindness, meant to lead to repentance. The chapter develops two ideas in parallel: God's judgment is impartial, and the real insider — the real one of God's people — is the one whose heart is changed inwardly, not whose outward markers are correct."},
+     {h:"Important theme",
+      body:"Outward markers do not equal inward reality, and kindness is the actual mechanism God uses to move you. We tend to imagine God as either pressuring us or evaluating us. Paul says no — God's kindness is what changes people. That's not soft theology; it's structural. The same God who judges impartially is patient on purpose. He is not weighing whether you've performed; he is drawing you back to him by being kinder than your performance deserves."},
+     {h:"Why this matters for you",
+      body:"Two things land hard for an INTJ-9 builder. First: you build systems, and you can measure your own life by the outward markers — discipline, workouts shipped, scripture read, hours worked, the optics of doing it right. Romans 2 isn't asking you to stop doing those things. It is asking you to notice when the markers have replaced the relationship. The disciplined Pharisee was not condemned for being disciplined. He was condemned for thinking the discipline was the point. Second: the 9 in you expects God to be quietly disappointed. The INTJ in you expects God to operate on logic and merit. Paul's actual claim is that the way God moves you is kinder than either of those expectations. Re-set your morning around that. You are not being pressured into this day. You are being met inside it."},
+     {h:"Important balance",
+      body:"Don't twist kindness into permission. Paul is not saying God doesn't really care what you do. Read verses 6 through 10 carefully — there is real consequence in this chapter. Kindness is the mechanism of change, not the absence of standard. It is the path, not the destination. The error in one direction is religious anxiety; the error in the other is moral drift. Romans is going to spend sixteen chapters threading that needle. Today, just notice the first stitch: he is kinder than you expect, and that kindness is meant to move you, not relax you."},
+     {h:"Most relevant verse for you",
+      body:"This verse undoes two of your default postures at once. It tells the 9 in you to stop hiding from a God you imagine is mildly annoyed at you. And it tells the strategist in you that kindness is not weakness — it is the actual mechanism by which transformation happens. The path forward today is not to clean yourself up before approaching him. It is to let his kindness reach you, and to be moved by it."}
+   ]},
+  {ref:"Romans 3",open:"All have sinned and fall short of the glory of God.",reflect:"You quietly believe you're above the average problem. You aren't. That's the door, not the wall — mercy only works on equal ground."},
+  {ref:"Romans 4",open:"Abraham believed God, and it was counted to him as righteousness.",reflect:"Faith is staking before the evidence is in. Where today are you holding out for proof you're not going to get?"},
+  {ref:"Romans 5",open:"Therefore, since we have been justified by faith, we have peace with God.",reflect:"Peace with God is not a feeling to chase. It's a position to stand on. Lead from the position, not the mood."},
+  {ref:"Romans 6",open:"How can we who died to sin still live in it?",reflect:"The pattern you keep half-obeying is not your master anymore. Name one. Then don't repeat it."},
+  {ref:"Romans 7",open:"I do not understand my own actions.",reflect:"Paul names the mess and stays in love with God anyway. You're not a failed Christian for feeling the tension."},
+  {ref:"Romans 8",open:"There is therefore now no condemnation for those who are in Christ Jesus.",reflect:"Read this addressed by name. None — not for the tired part, not for the part that wonders if you're enough."},
+  {ref:"Romans 9",open:"I have great sorrow and unceasing anguish in my heart.",reflect:"Let love cost you something today. Carry someone's weight without managing it."},
+  {ref:"Romans 10",open:"How are they to hear without someone preaching?",reflect:"Your life with your wife and son is a sermon being preached without words. What does the daily texture say?"},
+  {ref:"Romans 11",open:"Oh, the depth of the riches and wisdom and knowledge of God!",reflect:"Your frame of God is good but not God. Stay teachable."},
+  {ref:"Romans 12",open:"Present your bodies as a living sacrifice.",reflect:"Worship is bodily, ordinary, daily. Nothing gets to be too small."},
+  {ref:"Romans 13",open:"Owe no one anything, except to love each other.",reflect:"You're good at paying owed money. This is about owed presence."},
+  {ref:"Romans 14",open:"Each one should be fully convinced in his own mind.",reflect:"Hold yours firmly and others charitably — especially with your wife."},
+  {ref:"Romans 15",open:"We who are strong have an obligation to bear with the failings of the weak.",reflect:"Strength is for carrying, not for comparing. Today it goes underneath someone, not above them."},
+  {ref:"Romans 16",open:"I commend to you our sister Phoebe.",reflect:"He ends the most theological letter naming people. Look up from the system and see who's in the room with you."},
+  {ref:"Ecclesiastes 1",open:"Vanity of vanities, says the Preacher; all is vanity.",reflect:"What today are you treating as ultimate that's actually a passing breath?"},
+  {ref:"Ecclesiastes 2",open:"I made great works.",reflect:"Achievement doesn't satisfy the soul it was supposed to fill. The build is fine; don't ask it to be a savior."},
+  {ref:"Ecclesiastes 3",open:"For everything there is a season.",reflect:"This season has its own particular work. Don't grieve it for not being a different one."},
+  {ref:"Ecclesiastes 4",open:"Two are better than one.",reflect:"Where today are you choosing alone when together is the actual move?"},
+  {ref:"Ecclesiastes 5",open:"Guard your steps when you go to the house of God.",reflect:"Quick to listen, slow to speak — same at the dinner table as at the altar."},
+  {ref:"Ecclesiastes 6",open:"All the toil of man is for his mouth, yet his appetite is not satisfied.",reflect:"Name what you're actually hungry for. It's rarely productivity. Usually presence."},
+  {ref:"Ecclesiastes 7",open:"A good name is better than precious ointment.",reflect:"Reputation is compounding interest on small honest choices."},
+  {ref:"Ecclesiastes 8",open:"Who is like the wise? Who knows the interpretation of a thing?",reflect:"Sometimes sitting with the open is the wiser thing. You don't have to resolve everything today."},
+  {ref:"Ecclesiastes 9",open:"Whatever your hand finds to do, do it with your might.",reflect:"Today's work, done fully, is enough. You aren't behind on a race that isn't being run."},
+  {ref:"Ecclesiastes 10",open:"Dead flies make the perfumer's ointment give off a stench.",reflect:"Clean up a small habit before it stains a bigger one."},
+  {ref:"Ecclesiastes 11",open:"Cast your bread upon the waters, for you will find it after many days.",reflect:"Sow without watching every seed. Some work won't show up for years."},
+  {ref:"Ecclesiastes 12",open:"Remember your Creator in the days of your youth.",reflect:"Before the body slows. Before the circle thins. Build now."}
+];
+
+var MOBILITY=[
+  {name:"Easy bike warmup",timed:true,dur:180,dose:"3 min, easy pedal"},
+  {name:"Couch stretch",timed:true,dur:60,dose:"60 sec each side, x2"},
+  {name:"90/90 hip stretches",timed:true,dur:60,dose:"60 sec each side, x2"},
+  {name:"Glute bridge",timed:false,dose:"15 reps"},
+  {name:"Dynamic hamstring floss",timed:false,dose:"10 each leg"},
+  {name:"Dead bug",timed:false,dose:"8 each side, slow"}
+];
+
+var PROVERBS=[
+  {ref:"1:7",text:"The fear of the LORD is the beginning of knowledge; fools despise wisdom and instruction."},
+  {ref:"2:6",text:"For the LORD gives wisdom; from his mouth come knowledge and understanding."},
+  {ref:"3:5",text:"Trust in the LORD with all your heart, and do not lean on your own understanding."},
+  {ref:"4:23",text:"Keep your heart with all vigilance, for from it flow the springs of life."},
+  {ref:"5:15",text:"Drink water from your own cistern, flowing water from your own well."},
+  {ref:"6:6",text:"Go to the ant, O sluggard; consider her ways, and be wise."},
+  {ref:"7:2",text:"Keep my commandments and live; keep my teaching as the apple of your eye."},
+  {ref:"8:17",text:"I love those who love me, and those who seek me diligently find me."},
+  {ref:"9:10",text:"The fear of the LORD is the beginning of wisdom, and the knowledge of the Holy One is insight."},
+  {ref:"10:12",text:"Hatred stirs up strife, but love covers all offenses."},
+  {ref:"11:2",text:"When pride comes, then comes disgrace, but with the humble is wisdom."},
+  {ref:"12:1",text:"Whoever loves discipline loves knowledge, but he who hates reproof is stupid."},
+  {ref:"13:20",text:"Whoever walks with the wise becomes wise, but the companion of fools will suffer harm."},
+  {ref:"14:12",text:"There is a way that seems right to a man, but its end is the way to death."},
+  {ref:"15:1",text:"A soft answer turns away wrath, but a harsh word stirs up anger."},
+  {ref:"16:3",text:"Commit your work to the LORD, and your plans will be established."},
+  {ref:"17:17",text:"A friend loves at all times, and a brother is born for adversity."},
+  {ref:"18:21",text:"Death and life are in the power of the tongue, and those who love it will eat its fruits."},
+  {ref:"19:11",text:"Good sense makes one slow to anger, and it is his glory to overlook an offense."},
+  {ref:"20:3",text:"It is an honor for a man to keep aloof from strife, but every fool will be quarreling."},
+  {ref:"21:31",text:"The horse is made ready for the day of battle, but the victory belongs to the LORD."},
+  {ref:"22:6",text:"Train up a child in the way he should go; even when he is old he will not depart from it."},
+  {ref:"23:4",text:"Do not toil to acquire wealth; be discerning enough to desist."},
+  {ref:"24:3",text:"By wisdom a house is built, and by understanding it is established."},
+  {ref:"25:28",text:"A man without self-control is like a city broken into and left without walls."},
+  {ref:"26:11",text:"Like a dog that returns to his vomit is a fool who repeats his folly."},
+  {ref:"27:17",text:"Iron sharpens iron, and one man sharpens another."},
+  {ref:"28:13",text:"Whoever conceals his transgressions will not prosper, but he who confesses and forsakes them will obtain mercy."},
+  {ref:"29:25",text:"The fear of man lays a snare, but whoever trusts in the LORD is safe."},
+  {ref:"30:8",text:"Remove far from me falsehood and lying; give me neither poverty nor riches; feed me with the food that is needful for me."},
+  {ref:"31:30",text:"Charm is deceitful, and beauty is vain, but a woman who fears the LORD is to be praised."}
+];
+
+
+
+var WORKOUTS={
+0:{rest:true,day:"Sunday",title:"Rest",line:"Walk. Family. Sabbath."},
+1:{day:"Monday",title:"Upper Strength",exs:[
+  {name:"DB Bench Press",sets:4,reps:"6–8",rest:90,sw:"30–45 lbs",setup:"Lie flat. DBs at chest, elbows ~45°.",exec:"Press up and slightly in. Lower 2–3 sec. Touch chest lightly.",feel:"Chest and triceps. Blades retracted."},
+  {name:"DB Bent-Over Row",sets:4,reps:"8 each",rest:90,sw:"40–60 lbs",setup:"Hinge ~45°. Soft knees. Core braced.",exec:"Row to lower ribcage. Lead with elbow. Squeeze at top.",feel:"Lats and rhomboids. Core stiff."},
+  {name:"DB Shoulder Press",sets:3,reps:8,rest:75,sw:"25–35 lbs",setup:"Seated or standing. DBs at shoulder height.",exec:"Press overhead. Ribs down — no back arch.",feel:"Deltoids. NOT lower back."},
+  {name:"Band Pull-Apart",sets:3,reps:15,rest:60,sw:"Light band",setup:"Arms straight at chest height.",exec:"Pull band apart, squeeze blades. Control return.",feel:"Rear delts and rhomboids."},
+  {name:"DB Bicep Curl",sets:2,reps:10,rest:60,sw:"20 lbs",setup:"Palms forward. Elbows pinned at sides.",exec:"Curl up, squeeze, lower 2 sec. Elbows still.",feel:"Bicep peak contraction."},
+  {name:"Wrist Curl + Reverse",sets:2,reps:"15 + 15",rest:45,sw:"5–10 lbs",setup:"Forearm on thigh, wrist off knee.",exec:"15 palm-up, flip, 15 palm-down = 1 set.",feel:"Forearm flexors then extensors."},
+  {name:"Incline Pushup (finisher)",sets:3,reps:"8–10 clean",rest:60,sw:"BW on couch arm",setup:"Hands on couch arm. Body straight.",exec:"Lower 2 sec. Press up fully. Stop when hips sag.",feel:"Chest, triceps, bracing core."}
+]},
+2:{day:"Tuesday",title:"Lower / Posterior Chain",exs:[
+  {name:"Goblet Squat",sets:4,reps:8,rest:90,sw:"35–55 lbs",setup:"DB vertical at chest. Feet shoulder-width.",exec:"Sit back and down. Drive through full foot.",feel:"Quads, glutes, inner thighs."},
+  {name:"Romanian Deadlift (DB)",sets:4,reps:8,rest:90,sw:"40–65 lbs",setup:"DBs in front of thighs. Soft knees.",exec:"Push HIPS BACK. Slide DBs down thighs. Drive hips forward.",feel:"Hamstrings and glutes. NOT lower back."},
+  {name:"Bulgarian Split Squat",sets:3,reps:"8 each",rest:90,sw:"BW or 15–25 lbs ea",setup:"Rear foot on couch. Front foot forward.",exec:"Lower rear knee toward floor. Torso upright.",feel:"Front quad and glute."},
+  {name:"DB Hip Thrust",sets:3,reps:15,rest:75,sw:"35–55 lbs",setup:"Upper back on couch. DB on hips.",exec:"Drive hips UP. Squeeze glutes 1–2 sec at top.",feel:"Glutes only. Nothing in lower back."},
+  {name:"Standing Calf Raise",sets:2,reps:20,rest:60,sw:"BW or DBs",setup:"Stand on step edge. Hold wall.",exec:"Rise onto balls. Pause. Lower SLOW — 3 sec down.",feel:"Calf fully contracted at top."},
+  {name:"Easy Bike Cooldown",sets:1,timed:true,dur:300,rest:0,sw:"Low resistance",setup:"Bike, low resistance.",exec:"5 min easy pedaling.",feel:"HR dropping."}
+]},
+3:{day:"Wednesday",title:"Conditioning + Mobility",exs:[
+  {name:"Bike Intervals",sets:1,timed:true,dur:900,rest:0,sw:"5 rounds: 2 min easy / 1 min hard",setup:"Bike ready. 5 rounds.",exec:"2 min easy → 1 min hard. 5x.",feel:"Breathing elevated easy, burning hard."},
+  {name:"World's Greatest Stretch",sets:1,reps:"5 each side",rest:0,setup:"Plank position.",exec:"Step foot outside hand. Drop opposite knee. Reach to ceiling.",feel:"Hip flexor, t-spine, shoulder."},
+  {name:"90/90 Hip Transitions",sets:1,reps:"10 each direction",rest:0,setup:"Sit in 90/90 on floor.",exec:"Rotate to switch legs. Sit tall.",feel:"Hip capsule opening."},
+  {name:"Thoracic Rotation",sets:1,reps:"10 each side",rest:0,setup:"Side-lying. Bottom knee bent 90°. Palms together.",exec:"Open top arm, rotate chest to ceiling.",feel:"Mid-back rotating open."},
+  {name:"Couch Stretch Hold",sets:2,timed:true,dur:90,rest:0,sw:"90 sec each side",setup:"Rear shin on wall. Front foot forward.",exec:"Hold 90 sec. Squeeze rear glute. Breathe.",feel:"Deep hip flexor release."},
+  {name:"Bear Crawl",sets:3,timed:true,dur:30,rest:30,sw:"30 sec on",setup:"Hands under shoulders, knees lifted 1 inch.",exec:"Crawl forward, opposite hand/foot.",feel:"Core lit up. Hip and shoulder stability."}
+]},
+4:{day:"Thursday",title:"Upper Hypertrophy / Stability",exs:[
+  {name:"DB Incline Press",sets:3,reps:"10–12",rest:75,sw:"22–35 lbs",setup:"Couch arm as incline. DBs at upper chest.",exec:"Press up and in. Lower 3 sec.",feel:"Upper chest and front delt."},
+  {name:"Chest-Supported DB Row",sets:3,reps:12,rest:75,sw:"30–45 lbs",setup:"Face down on inclined couch. DBs hanging.",exec:"Row to ribcage. Full blade retraction.",feel:"Lats, rhomboids, rear delts."},
+  {name:"DB Lateral Raise",sets:3,reps:12,rest:60,sw:"10–15 lbs",setup:"Slight elbow bend. Lean 10–15° forward.",exec:"Raise to shoulder height. Lower 3 sec.",feel:"Side delts burning."},
+  {name:"Arnold Press",sets:3,reps:10,rest:75,sw:"20–30 lbs",setup:"DBs at chin, palms facing YOU.",exec:"Press up, rotate palms forward at top.",feel:"Full deltoid through rotation."},
+  {name:"Single-Arm DB Row",sets:3,reps:"12 each",rest:60,sw:"35–55 lbs",setup:"Hand and knee on bench. Flat back.",exec:"Row to hip. Full stretch at bottom.",feel:"Lat stretch then strong contraction."},
+  {name:"Hammer Curl",sets:2,reps:12,rest:60,sw:"25–35 lbs",setup:"Neutral grip. Elbows at sides.",exec:"Curl up, thumbs to ceiling.",feel:"Brachialis and forearm."},
+  {name:"Tricep Overhead Extension",sets:2,reps:12,rest:60,sw:"20–30 lbs",setup:"One DB overhead, both hands.",exec:"Lower behind head. Press back up.",feel:"Long head stretch and contraction."},
+  {name:"Dead Hang",sets:3,timed:true,dur:20,rest:60,sw:"BW",setup:"Bar, shoulder-width grip.",exec:"Hold 20 sec. Squeeze grip. Shoulders packed.",feel:"Forearms and grip. Shoulder decompression."},
+  {name:"Farmer Carry (finisher)",sets:3,timed:true,dur:30,rest:60,sw:"50–70 lbs ea",setup:"Heavy DBs at sides. Stand tall.",exec:"Walk slowly 30 sec. Tall spine. Core braced.",feel:"Grip, core, traps. Not spine."}
+]},
+5:{day:"Friday",title:"Lower + Athletic Conditioning",exs:[
+  {name:"DB Jump Squat (Light)",sets:3,reps:8,rest:90,sw:"10–15 lbs ea",setup:"Light DBs at sides. Feet shoulder-width.",exec:"Squat to parallel. Explode up. Land SOFT.",feel:"Explosive, athletic."},
+  {name:"Single-Leg RDL",sets:3,reps:"8 each",rest:90,sw:"20–35 lbs ea",setup:"Stand on one leg. Soft knee.",exec:"Hinge, rear leg rises. Hips level.",feel:"Hamstring loaded. Glute stabilizing."},
+  {name:"Lateral Lunge",sets:3,reps:"10 each",rest:75,sw:"BW or 15–20 lbs",setup:"Feet together.",exec:"Step wide. Sit into that hip. Push back.",feel:"Inner thigh and glute of bent leg."},
+  {name:"DB Step-Up",sets:3,reps:"10 each",rest:75,sw:"20–30 lbs ea",setup:"Stable box. DBs at sides.",exec:"Drive through heel to stand. Controlled down.",feel:"Quad and glute of working leg."},
+  {name:"Bike Sprint Intervals",sets:1,timed:true,dur:600,rest:0,sw:"6 rounds: 30 sec hard / 90 sec easy",setup:"High resistance ready.",exec:"30 sec ALL OUT. 90 sec easy. 6 rounds.",feel:"Lungs on fire."},
+  {name:"Side Plank + Hip Dips (finisher)",sets:3,timed:true,dur:30,rest:30,sw:"30 sec ea side",setup:"Side-lying. Elbow under shoulder.",exec:"Lift hips. Hold 30 sec. Then 10 hip dips each.",feel:"Obliques and glute medius."}
+]},
+6:{rest:true,day:"Saturday",title:"Reset",line:"Walk. Mobility. Whatever the body asks for."}
 };
 
-// Weight history is shared with dad-athlete-dashboard.html (same key)
-var DB = {
-  weights: function(){ try{ return JSON.parse(ST.get('dad_weights')||'{}'); }catch(e){ return {}; } },
-  saveWeights: function(w){ ST.set('dad_weights', JSON.stringify(w)); },
-  lastWeight: function(name){
-    var w = this.weights(); var h = w[name];
-    return (h && h.length) ? h[h.length-1] : null;
-  },
-  logWeight: function(name, weight, date){
-    var w = this.weights();
-    if (!w[name]) w[name] = [];
-    w[name].push({ date: date, weight: parseFloat(weight)||0 });
-    if (w[name].length > 30) w[name] = w[name].slice(-30);
-    this.saveWeights(w);
+var S={sessionStart:null,sessionIv:null,mobilityState:[],exState:[],timer:{remainingSecs:0,iv:null,running:false,onDone:null,name:""}};
+
+function render(){
+  var now=new Date(),dse=daysSinceStart(),idx=((dse%READINGS.length)+READINGS.length)%READINGS.length,r=READINGS[idx];
+  document.getElementById('date').textContent=fmtDate(now);
+  document.getElementById('clock').textContent=fmtClock(now);
+  renderDevotional(r);renderMobility();renderWorkout(now.getDay());
+  var pIdx=((now.getDate()-1)%31);var pv=PROVERBS[pIdx];
+  document.getElementById('proverb-ref').textContent='Proverbs '+pv.ref;
+  document.getElementById('proverb-text').textContent='\u201C'+pv.text+'\u201D';
+}
+function renderDevotional(r){
+  document.getElementById('reading-ref').textContent=r.ref;
+  document.getElementById('reading-opening').textContent='“'+r.open+'”';
+  var b=document.getElementById('devotional-body');b.innerHTML='';
+  if(r.sections&&r.sections.length){
+    r.sections.forEach(function(sec,i){
+      var h=document.createElement('h3');h.textContent=sec.h;b.appendChild(h);
+      if(i===r.sections.length-1&&r.verse){var v=document.createElement('div');v.className='verse';v.textContent=r.verse;b.appendChild(v);}
+      var p=document.createElement('p');p.textContent=sec.body;b.appendChild(p);
+    });
+  }else{var p=document.createElement('p');p.className='reflect-short';p.textContent=r.reflect||'';b.appendChild(p);}
+}
+function renderMobility(){
+  var ol=document.getElementById('mobility-list');ol.innerHTML='';
+  if(S.mobilityState.length!==MOBILITY.length)S.mobilityState=MOBILITY.map(function(){return{done:false};});
+  MOBILITY.forEach(function(m,i){
+    var st=S.mobilityState[i],li=document.createElement('li');li.className='mob-row'+(st.done?' done':'');
+    li.innerHTML='<div class="mob-left"><div class="mob-name">'+m.name+'</div><div class="mob-dose">'+m.dose+'</div></div>';
+    var btn=document.createElement('button');btn.className='mob-btn'+(st.done?' done':'');
+    if(st.done){btn.textContent='✓ done';btn.onclick=function(){st.done=false;renderMobility();};}
+    else if(m.timed){btn.textContent='Start '+fmtMS(m.dur);btn.onclick=function(){startTimer(m.dur,m.name+' — '+m.dose,function(){st.done=true;renderMobility();});};}
+    else{btn.textContent='Mark done';btn.onclick=function(){st.done=true;renderMobility();};}
+    li.appendChild(btn);ol.appendChild(li);
+  });
+}
+var WORKOUTS={
+0:{rest:true,day:"Sunday",title:"Rest",line:"Walk. Family. Sabbath."},
+1:{day:"Monday",title:"Upper Strength",exs:[
+  {name:"DB Bench Press",sets:4,reps:"6–8",rest:90,sw:"30–45 lbs",setup:"Lie flat. DBs at chest, elbows ~45°.",exec:"Press up and slightly in. Lower 2–3 sec. Touch chest lightly.",feel:"Chest and triceps. Blades retracted."},
+  {name:"DB Bent-Over Row",sets:4,reps:"8 each",rest:90,sw:"40–60 lbs",setup:"Hinge ~45°. Soft knees. Core braced.",exec:"Row to lower ribcage. Lead with elbow. Squeeze at top.",feel:"Lats and rhomboids. Core stiff."},
+  {name:"DB Shoulder Press",sets:3,reps:8,rest:75,sw:"25–35 lbs",setup:"Seated or standing. DBs at shoulder height.",exec:"Press overhead. Ribs down — no back arch.",feel:"Deltoids. NOT lower back."},
+  {name:"Band Pull-Apart",sets:3,reps:15,rest:60,sw:"Light band",setup:"Arms straight at chest height.",exec:"Pull band apart, squeeze blades. Control return.",feel:"Rear delts and rhomboids."},
+  {name:"DB Bicep Curl",sets:2,reps:10,rest:60,sw:"20 lbs",setup:"Palms forward. Elbows pinned at sides.",exec:"Curl up, squeeze, lower 2 sec. Elbows still.",feel:"Bicep peak contraction."},
+  {name:"Wrist Curl + Reverse",sets:2,reps:"15 + 15",rest:45,sw:"5–10 lbs",setup:"Forearm on thigh, wrist off knee.",exec:"15 palm-up, flip, 15 palm-down = 1 set.",feel:"Forearm flexors then extensors."},
+  {name:"Incline Pushup (finisher)",sets:3,reps:"8–10 clean",rest:60,sw:"BW on couch arm",setup:"Hands on couch arm. Body straight.",exec:"Lower 2 sec. Press up fully. Stop when hips sag.",feel:"Chest, triceps, bracing core."}
+]},
+2:{day:"Tuesday",title:"Lower / Posterior Chain",exs:[
+  {name:"Goblet Squat",sets:4,reps:8,rest:90,sw:"35–55 lbs",setup:"DB vertical at chest. Feet shoulder-width.",exec:"Sit back and down. Drive through full foot.",feel:"Quads, glutes, inner thighs."},
+  {name:"Romanian Deadlift (DB)",sets:4,reps:8,rest:90,sw:"40–65 lbs",setup:"DBs in front of thighs. Soft knees.",exec:"Push HIPS BACK. Slide DBs down thighs. Drive hips forward.",feel:"Hamstrings and glutes. NOT lower back."},
+  {name:"Bulgarian Split Squat",sets:3,reps:"8 each",rest:90,sw:"BW or 15–25 lbs ea",setup:"Rear foot on couch. Front foot forward.",exec:"Lower rear knee toward floor. Torso upright.",feel:"Front quad and glute."},
+  {name:"DB Hip Thrust",sets:3,reps:15,rest:75,sw:"35–55 lbs",setup:"Upper back on couch. DB on hips.",exec:"Drive hips UP. Squeeze glutes 1–2 sec at top.",feel:"Glutes only. Nothing in lower back."},
+  {name:"Standing Calf Raise",sets:2,reps:20,rest:60,sw:"BW or DBs",setup:"Stand on step edge. Hold wall.",exec:"Rise onto balls. Pause. Lower SLOW — 3 sec down.",feel:"Calf fully contracted at top."},
+  {name:"Easy Bike Cooldown",sets:1,timed:true,dur:300,rest:0,sw:"Low resistance",setup:"Bike, low resistance.",exec:"5 min easy pedaling.",feel:"HR dropping."}
+]},
+3:{day:"Wednesday",title:"Conditioning + Mobility",exs:[
+  {name:"Bike Intervals",sets:1,timed:true,dur:900,rest:0,sw:"5 rounds: 2 min easy / 1 min hard",setup:"Bike ready. 5 rounds.",exec:"2 min easy → 1 min hard. 5x.",feel:"Breathing elevated easy, burning hard."},
+  {name:"World's Greatest Stretch",sets:1,reps:"5 each side",rest:0,setup:"Plank position.",exec:"Step foot outside hand. Drop opposite knee. Reach to ceiling.",feel:"Hip flexor, t-spine, shoulder."},
+  {name:"90/90 Hip Transitions",sets:1,reps:"10 each direction",rest:0,setup:"Sit in 90/90 on floor.",exec:"Rotate to switch legs. Sit tall.",feel:"Hip capsule opening."},
+  {name:"Thoracic Rotation",sets:1,reps:"10 each side",rest:0,setup:"Side-lying. Bottom knee bent 90°. Palms together.",exec:"Open top arm, rotate chest to ceiling.",feel:"Mid-back rotating open."},
+  {name:"Couch Stretch Hold",sets:2,timed:true,dur:90,rest:0,sw:"90 sec each side",setup:"Rear shin on wall. Front foot forward.",exec:"Hold 90 sec. Squeeze rear glute. Breathe.",feel:"Deep hip flexor release."},
+  {name:"Bear Crawl",sets:3,timed:true,dur:30,rest:30,sw:"30 sec on",setup:"Hands under shoulders, knees lifted 1 inch.",exec:"Crawl forward, opposite hand/foot.",feel:"Core lit up. Hip and shoulder stability."}
+]},
+4:{day:"Thursday",title:"Upper Hypertrophy / Stability",exs:[
+  {name:"DB Incline Press",sets:3,reps:"10–12",rest:75,sw:"22–35 lbs",setup:"Couch arm as incline. DBs at upper chest.",exec:"Press up and in. Lower 3 sec.",feel:"Upper chest and front delt."},
+  {name:"Chest-Supported DB Row",sets:3,reps:12,rest:75,sw:"30–45 lbs",setup:"Face down on inclined couch. DBs hanging.",exec:"Row to ribcage. Full blade retraction.",feel:"Lats, rhomboids, rear delts."},
+  {name:"DB Lateral Raise",sets:3,reps:12,rest:60,sw:"10–15 lbs",setup:"Slight elbow bend. Lean 10–15° forward.",exec:"Raise to shoulder height. Lower 3 sec.",feel:"Side delts burning."},
+  {name:"Arnold Press",sets:3,reps:10,rest:75,sw:"20–30 lbs",setup:"DBs at chin, palms facing YOU.",exec:"Press up, rotate palms forward at top.",feel:"Full deltoid through rotation."},
+  {name:"Single-Arm DB Row",sets:3,reps:"12 each",rest:60,sw:"35–55 lbs",setup:"Hand and knee on bench. Flat back.",exec:"Row to hip. Full stretch at bottom.",feel:"Lat stretch then strong contraction."},
+  {name:"Hammer Curl",sets:2,reps:12,rest:60,sw:"25–35 lbs",setup:"Neutral grip. Elbows at sides.",exec:"Curl up, thumbs to ceiling.",feel:"Brachialis and forearm."},
+  {name:"Tricep Overhead Extension",sets:2,reps:12,rest:60,sw:"20–30 lbs",setup:"One DB overhead, both hands.",exec:"Lower behind head. Press back up.",feel:"Long head stretch and contraction."},
+  {name:"Dead Hang",sets:3,timed:true,dur:20,rest:60,sw:"BW",setup:"Bar, shoulder-width grip.",exec:"Hold 20 sec. Squeeze grip. Shoulders packed.",feel:"Forearms and grip. Shoulder decompression."},
+  {name:"Farmer Carry (finisher)",sets:3,timed:true,dur:30,rest:60,sw:"50–70 lbs ea",setup:"Heavy DBs at sides. Stand tall.",exec:"Walk slowly 30 sec. Tall spine. Core braced.",feel:"Grip, core, traps. Not spine."}
+]},
+5:{day:"Friday",title:"Lower + Athletic Conditioning",exs:[
+  {name:"DB Jump Squat (Light)",sets:3,reps:8,rest:90,sw:"10–15 lbs ea",setup:"Light DBs at sides. Feet shoulder-width.",exec:"Squat to parallel. Explode up. Land SOFT.",feel:"Explosive, athletic."},
+  {name:"Single-Leg RDL",sets:3,reps:"8 each",rest:90,sw:"20–35 lbs ea",setup:"Stand on one leg. Soft knee.",exec:"Hinge, rear leg rises. Hips level.",feel:"Hamstring loaded. Glute stabilizing."},
+  {name:"Lateral Lunge",sets:3,reps:"10 each",rest:75,sw:"BW or 15–20 lbs",setup:"Feet together.",exec:"Step wide. Sit into that hip. Push back.",feel:"Inner thigh and glute of bent leg."},
+  {name:"DB Step-Up",sets:3,reps:"10 each",rest:75,sw:"20–30 lbs ea",setup:"Stable box. DBs at sides.",exec:"Drive through heel to stand. Controlled down.",feel:"Quad and glute of working leg."},
+  {name:"Bike Sprint Intervals",sets:1,timed:true,dur:600,rest:0,sw:"6 rounds: 30 sec hard / 90 sec easy",setup:"High resistance ready.",exec:"30 sec ALL OUT. 90 sec easy. 6 rounds.",feel:"Lungs on fire."},
+  {name:"Side Plank + Hip Dips (finisher)",sets:3,timed:true,dur:30,rest:30,sw:"30 sec ea side",setup:"Side-lying. Elbow under shoulder.",exec:"Lift hips. Hold 30 sec. Then 10 hip dips each.",feel:"Obliques and glute medius."}
+]},
+6:{rest:true,day:"Saturday",title:"Reset",line:"Walk. Mobility. Whatever the body asks for."}
+};
+
+var S={sessionStart:null,sessionIv:null,mobilityState:[],exState:[],timer:{remainingSecs:0,iv:null,running:false,onDone:null,name:""}};
+
+function render(){
+  var now=new Date(),dse=daysSinceStart(),idx=((dse%READINGS.length)+READINGS.length)%READINGS.length,r=READINGS[idx];
+  document.getElementById('date').textContent=fmtDate(now);
+  document.getElementById('clock').textContent=fmtClock(now);
+  renderDevotional(r);renderMobility();renderWorkout(now.getDay());
+  var pIdx=((now.getDate()-1)%31);var pv=PROVERBS[pIdx];
+  document.getElementById('proverb-ref').textContent='Proverbs '+pv.ref;
+  document.getElementById('proverb-text').textContent='\u201C'+pv.text+'\u201D';
+}
+function renderDevotional(r){
+  document.getElementById('reading-ref').textContent=r.ref;
+  document.getElementById('reading-opening').textContent='“'+r.open+'”';
+  var b=document.getElementById('devotional-body');b.innerHTML='';
+  if(r.sections&&r.sections.length){
+    r.sections.forEach(function(sec,i){
+      var h=document.createElement('h3');h.textContent=sec.h;b.appendChild(h);
+      if(i===r.sections.length-1&&r.verse){var v=document.createElement('div');v.className='verse';v.textContent=r.verse;b.appendChild(v);}
+      var p=document.createElement('p');p.textContent=sec.body;b.appendChild(p);
+    });
+  }else{var p=document.createElement('p');p.className='reflect-short';p.textContent=r.reflect||'';b.appendChild(p);}
+}
+function renderMobility(){
+  var ol=document.getElementById('mobility-list');ol.innerHTML='';
+  if(S.mobilityState.length!==MOBILITY.length)S.mobilityState=MOBILITY.map(function(){return{done:false};});
+  MOBILITY.forEach(function(m,i){
+    var st=S.mobilityState[i],li=document.createElement('li');li.className='mob-row'+(st.done?' done':'');
+    li.innerHTML='<div class="mob-left"><div class="mob-name">'+m.name+'</div><div class="mob-dose">'+m.dose+'</div></div>';
+    var btn=document.createElement('button');btn.className='mob-btn'+(st.done?' done':'');
+    if(st.done){btn.textContent='✓ done';btn.onclick=function(){st.done=false;renderMobility();};}
+    else if(m.timed){btn.textContent='Start '+fmtMS(m.dur);btn.onclick=function(){startTimer(m.dur,m.name+' — '+m.dose,function(){st.done=true;renderMobility();});};}
+    else{btn.textContent='Mark done';btn.onclick=function(){st.done=true;renderMobility();};}
+    li.appendChild(btn);ol.appendChild(li);
+  });
+}
+function renderWorkout(wd){
+  var w=WORKOUTS[wd];if(!w){document.getElementById('workout-title').textContent='—';return;}
+  document.getElementById('workout-title').textContent=w.title;
+  var list=document.getElementById('workout-list');list.innerHTML='';
+  if(w.rest){var p=document.createElement('p');p.className='reflect-short';p.style.fontSize='1.5rem';p.style.color='#8a8475';p.textContent=w.line;list.appendChild(p);return;}
+  if(S.exState.length!==w.exs.length){S.exState=w.exs.map(function(ex){var n=ex.sets||1,s=[];for(var i=0;i<n;i++)s.push(false);return{sets:s,weight:''};});}
+  w.exs.forEach(function(ex,exIdx){
+    var st=S.exState[exIdx],ts=ex.sets||1,dc=st.sets.filter(function(x){return x;}).length,ad=dc===ts;
+    var card=document.createElement('div');card.className='ex-card'+(ad?' done':'');
+    var meta=(ex.timed?'⏱ '+(ex.sw||fmtMS(ex.dur)):ts+' × '+ex.reps)+(ex.sw&&!ex.timed?'<span class="sep">·</span>'+ex.sw:'')+(ex.rest?'<span class="sep">·</span>'+ex.rest+'s rest':'');
+    var lw=DB.lastWeight(ex.name),lwH='';
+    if(!ex.timed)lwH='<div class="last-weight">Last used: '+(lw?'<strong>'+lw.weight+' lbs</strong> <span style="color:#6f7a6f">('+lw.date+')</span>':'—')+'</div>';
+    var wH='';
+    if(!ex.timed)wH='<div class="ex-weight-row"><input class="weight-input" type="number" inputmode="numeric" placeholder="lbs" value="'+(st.weight||'')+'" oninput="onWeightInput('+exIdx+',this.value)"><button class="mic-btn" id="mic-'+exIdx+'" onclick="voiceWeight('+exIdx+')" title="Voice entry">🎤</button>'+lwH+'</div>';
+    var dH='<div class="set-dots">';for(var i=0;i<ts;i++){var c='set-dot';if(st.sets[i])c+=' done';else if(i===dc)c+=' current';dH+='<div class="'+c+'"></div>';}dH+='</div>';
+    var aH='';
+    if(!ad){var ns=dc+1;
+      if(ex.timed)aH='<button class="set-btn" onclick="startExerciseTimer('+exIdx+')">Start '+fmtMS(ex.dur)+(ts>1?' — set '+ns+' of '+ts:'')+'</button>';
+      else aH='<button class="set-btn" onclick="completeSet('+exIdx+')">Set '+ns+' of '+ts+' complete ✓</button>';
+    }else aH='<button class="set-btn complete" onclick="resetExercise('+exIdx+')">✓ Complete — redo?</button>';
+    var cH=(ex.setup?'<div class="ex-cue"><span class="cue-lbl">setup</span>'+ex.setup+'</div>':'')+(ex.exec?'<div class="ex-cue"><span class="cue-lbl">exec</span>'+ex.exec+'</div>':'')+(ex.feel?'<div class="ex-cue"><span class="cue-lbl">feel</span>'+ex.feel+'</div>':'');
+    card.innerHTML='<div class="ex-name">'+ex.name+'</div><div class="ex-meta">'+meta+'</div>'+wH+dH+aH+'<div class="ex-cues">'+cH+'</div>';
+    list.appendChild(card);
+  });
+}
+function onWeightInput(i,v){S.exState[i].weight=v;}
+function completeSet(i){
+  var w=WORKOUTS[new Date().getDay()],ex=w.exs[i],st=S.exState[i];
+  var ni=st.sets.indexOf(false);if(ni===-1)return;
+  st.sets[ni]=true;
+  if(st.weight&&ni===0)DB.logWeight(ex.name,st.weight,todayISO());
+  var ad=st.sets.every(function(x){return x;});
+  if(ad||!ex.rest)renderWorkout(new Date().getDay());
+  else startTimer(ex.rest,'Rest — '+ex.name+' — set '+(ni+2)+' of '+st.sets.length,function(){renderWorkout(new Date().getDay());});
+}
+function startExerciseTimer(i){
+  var w=WORKOUTS[new Date().getDay()],ex=w.exs[i],st=S.exState[i];
+  var ni=st.sets.indexOf(false);if(ni===-1)return;
+  startTimer(ex.dur,ex.name+(st.sets.length>1?' — set '+(ni+1)+' of '+st.sets.length:''),function(){
+    st.sets[ni]=true;
+    var ad=st.sets.every(function(x){return x;});
+    if(!ad&&ex.rest)startTimer(ex.rest,'Rest — '+ex.name,function(){renderWorkout(new Date().getDay());});
+    else renderWorkout(new Date().getDay());
+  });
+}
+function resetExercise(i){var st=S.exState[i];for(var j=0;j<st.sets.length;j++)st.sets[j]=false;renderWorkout(new Date().getDay());}
+function beginSession(){
+  if(S.sessionStart)return;
+  S.sessionStart=Date.now();
+  document.getElementById('session-clock').classList.remove('hidden');
+  document.getElementById('begin-btn').textContent='Session running';
+  document.getElementById('begin-btn').disabled=true;
+  S.sessionIv=setInterval(updateSessionClock,1000);updateSessionClock();
+  goToStep('mobility');
+}
+function updateSessionClock(){
+  if(!S.sessionStart)return;
+  var s=Math.floor((Date.now()-S.sessionStart)/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60;
+  document.getElementById('session-clock').textContent=(h?h+':'+(m<10?'0':''):'')+m+':'+(x<10?'0':'')+x;
+}
+function startTimer(s,n,cb){
+  S.timer.remainingSecs=s;S.timer.onDone=cb||function(){};S.timer.name=n;S.timer.running=true;
+  clearInterval(S.timer.iv);
+  document.getElementById('timer-overlay').classList.remove('hidden');
+  document.getElementById('timer-name').textContent=n;
+  document.getElementById('timer-toggle').textContent='Pause';
+  updateTimerDisplay();S.timer.iv=setInterval(tickTimer,1000);
+}
+function tickTimer(){
+  if(!S.timer.running)return;
+  S.timer.remainingSecs--;updateTimerDisplay();
+  if(S.timer.remainingSecs<=0){
+    clearInterval(S.timer.iv);S.timer.running=false;
+    var d=document.getElementById('timer-display');d.textContent='Done';d.className='done';
+    try{beep();}catch(e){}
+    setTimeout(function(){closeTimer(true);},1500);
   }
-};
-
-function todayISO(){ return new Date().toISOString().split('T')[0]; }
-
-// ─────────────────────────────────────────────────────
-//  DATE / CLOCK
-// ─────────────────────────────────────────────────────
-function todayLocal(){ var d=new Date(); d.setHours(0,0,0,0); return d; }
-function fmtDate(d){ return d.toLocaleDateString('en-US',{ weekday:'long', month:'long', day:'numeric' }); }
-function fmtClock(d){
-  var h=d.getHours(), m=d.getMinutes(); var am=h<12; var hh=((h+11)%12)+1;
-  return hh+':'+(m<10?'0':'')+m+(am?'a':'p');
 }
-function fmtMS(secs){
-  var m=Math.floor(secs/60), s=secs%60;
-  return m+':'+(s<10?'0':'')+s;
+function updateTimerDisplay(){
+  var d=document.getElementById('timer-display');
+  d.textContent=fmtMS(Math.max(0,S.timer.remainingSecs));d.className='';
+  if(S.timer.remainingSecs<=5)d.className='go';
+  else if(S.timer.remainingSecs<=15)d.className='warn';
+}
+function toggleTimer(){
+  S.timer.running=!S.timer.running;
+  document.getElementById('timer-toggle').textContent=S.timer.running?'Pause':'Resume';
+  if(S.timer.running){clearInterval(S.timer.iv);S.timer.iv=setInterval(tickTimer,1000);}
+  else clearInterval(S.timer.iv);
+}
+function closeTimer(c){
+  clearInterval(S.timer.iv);S.timer.running=false;
+  document.getElementById('timer-overlay').classList.add('hidden');
+  if(c&&typeof S.timer.onDone==='function'){var cb=S.timer.onDone;S.timer.onDone=null;cb();}
+}
+function beep(){var c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.value=.12;o.start();setTimeout(function(){o.stop();c.close();},350);}
+function voiceWeight(i){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  var btn=document.getElementById('mic-'+i);
+  if(!SR){alert('Voice input not supported in this browser. Type the weight instead.');return;}
+  var r=new SR();r.lang='en-US';r.continuous=false;r.interimResults=false;
+  btn.classList.add('listening');
+  r.onresult=function(e){var t=e.results[0][0].transcript,m=t.match(/[\d.]+/);if(m){S.exState[i].weight=m[0];renderWorkout(new Date().getDay());}};
+  r.onerror=function(){btn.classList.remove('listening');};
+  r.onend=function(){btn.classList.remove('listening');};
+  try{r.start();}catch(e){btn.classList.remove('listening');}
+}
+function tickClock(){document.getElementById('clock').textContent=fmtClock(new Date());}
+function scheduleNext4AM(){var n=new Date(),x=new Date(n);x.setHours(4,0,0,0);if(x<=n)x.setDate(x.getDate()+1);setTimeout(function(){location.reload();},x-n);}
+function goToStep(name){
+  ['devotional','mobility','workout'].forEach(function(s){
+    var el=document.getElementById(s+'-section');
+    if(!el)return;
+    if(s===name)el.classList.add('active');else el.classList.remove('active');
+  });
+  try{window.scrollTo(0,0);}catch(e){}
+  try{history.replaceState(null,'','#'+name);}catch(e){}
 }
 
-// Anchor: Tue May 19 2026 = Romans 1. Tomorrow rolls to Romans 2.
-// To re-anchor, change this date.
-var START_DATE = new Date(2026, 4, 19);
-START_DATE.setHours(0,0,0,0);
-function daysSinceStart(){
-  return Math.floor((todayLocal() - START_DATE) / 86400000);
-}
-
-// ─────────────────────────────────────────────────────
-//  READINGS — 28-day cycle: Romans 1-16 → Ecclesiastes 1-12.
-//  Rich entries use `sections: [{h, body}]` (and optional `verse`).
-//  Short entries use `reflect: "..."` and will be deepened over time.
-// ─────────────────────────────────────────────────────
-var READINGS = [
-  // ── ROMANS ─────────────────────────────────────────
-  { ref:"Romans 1",
-    open:"Paul, a servant of Christ Jesus, called to be an apostle, set apart for the gospel of God.",
-    verse:"“Claiming to be wise, they became fools.” (Romans 1:22)",
-    sections:[
-      { h:"What's happening in Romans 1",
-        body:"Paul opens his most theologically dense letter with a setup, not a target. He's building toward the argument that every person — moral, intellectual, religious, strategic — needs grace. So he starts wide: humanity suppresses what it knows about God and trades worship of the Creator for worship of created things. Then he traces what happens downstream when that trade is made. The chapter can feel harsh in places, but Paul is not pointing at \"them out there.\" He's leveling the playing field so that by Romans 3 nobody is left standing on their own." },
-      { h:"Important theme",
-        body:"Disorder begins with worship disorder. The chapter says it three times in different words — they exchanged the truth for a lie, the glory of the immortal God for images of created things, the natural for the unnatural. The point is structural: what you orient your life around shapes everything downstream of it. Get the center wrong and the edges go crooked. Get the center right and the edges have something to align to." },
-      { h:"Why this matters for you",
-        body:"You are actively building. Systems. Identity. Discipline. Autonomy. Financial structures. Physical capability. A future leadership position. None of those are bad — they are mostly good. The danger Romans 1 names for an INTJ-9 builder is not recklessness or moral collapse. It is that any of those good things can quietly slide into the center of your life and become the thing you actually trust. Competence becomes self-salvation. Strategy becomes pride. Autonomy becomes isolation. Mastery becomes identity. The system you're building is meant to serve a center; it cannot be the center. If you let it become the center, it will not warn you — it will just slowly hollow you out while you still look like you're winning." },
-      { h:"Important balance",
-        body:"Don't read this chapter as ammunition. A lot of modern \"masculine\" content turns Romans 1 into \"we are the righteous few in a degenerate culture.\" That misses Paul's larger move entirely — Romans 2 immediately turns and says, and you who judge are also guilty. This chapter is not for sorting humanity into the awake and the asleep. It is for dismantling the very instinct in you that wants to do that sorting. Especially the analytical instinct. INTJs build the sharpest categories; Paul takes the categories away." },
-      { h:"Most relevant verse for you",
-        body:"Your temptation is not recklessness. Your temptation is believing intelligence, competence, and control can ultimately secure your life. Romans 1 destabilizes that idea — in a healthy way, before grace shows up in chapter 3 to give you something better to rest on." }
-    ]
-  },
-  { ref:"Romans 2",
-    open:"Do you presume on the riches of his kindness and forbearance and patience, not knowing that God's kindness is meant to lead you to repentance?",
-    verse:"“Or do you presume on the riches of his kindness and forbearance and patience, not knowing that God's kindness is meant to lead you to repentance?” (Romans 2:4)",
-    sections:[
-      { h:"What's happening in Romans 2",
-        body:"Right after the harsh-sounding catalog of chapter 1, Paul wheels. He turns to the religious, the moral, the disciplined — the people who would have nodded along through chapter 1 — and puts them under the same indictment: in passing judgment on another you condemn yourself, because you, the judge, practice the very same things. Then he reframes God's posture entirely. Not pressure. Not threat. Kindness, meant to lead to repentance. The chapter develops two ideas in parallel: God's judgment is impartial, and the real insider — the real one of God's people — is the one whose heart is changed inwardly, not whose outward markers are correct." },
-      { h:"Important theme",
-        body:"Outward markers do not equal inward reality, and kindness is the actual mechanism God uses to move you. We tend to imagine God as either pressuring us or evaluating us. Paul says no — God's kindness is what changes people. That's not soft theology; it's structural. The same God who judges impartially is patient on purpose. He is not weighing whether you've performed; he is drawing you back to him by being kinder than your performance deserves." },
-      { h:"Why this matters for you",
-        body:"Two things land hard for an INTJ-9 builder. First: you build systems, and you can measure your own life by the outward markers — discipline, workouts shipped, scripture read, hours worked, the optics of \"doing it right.\" Romans 2 isn't asking you to stop doing those things. It is asking you to notice when the markers have replaced the relationship. The disciplined Pharisee was not condemned for being disciplined. He was condemned for thinking the discipline was the point. Second: the 9 in you expects God to be quietly disappointed. The INTJ in you expects God to operate on logic and merit. Paul's actual claim is that the way God moves you is kinder than either of those expectations. Re-set your morning around that. You are not being pressured into this day. You are being met inside it." },
-      { h:"Important balance",
-        body:"Don't twist kindness into permission. Paul is not saying God doesn't really care what you do. Read verses 6 through 10 carefully — there is real consequence in this chapter. Kindness is the mechanism of change, not the absence of standard. It is the path, not the destination. The error in one direction is religious anxiety; the error in the other is moral drift. Romans is going to spend sixteen chapters threading that needle. Today, just notice the first stitch: he is kinder than you expect, and that kindness is me
+render();
+setInterval(tickClock,30*1000);
+scheduleNext4AM();
+</script>
+</body>
+</html>
