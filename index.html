@@ -68,6 +68,13 @@ body{padding:3vh 2.5vw 14vh 2.5vw;margin:0 auto;line-height:1.5}
 #timer-buttons{display:flex;gap:1.5vw}
 #timer-buttons button{background:#1a1a18;color:#e8e4d8;border:1px solid #3a3a36;padding:1.6vh 3vw;font-size:1.7rem;font-family:inherit;letter-spacing:.12em;cursor:pointer;border-radius:4px}
 #timer-buttons button:hover,#timer-buttons button:focus{border-color:#b8a878;outline:none}
+#timer-round{font-size:1.4rem;color:#6f7a6f;letter-spacing:.18em;text-transform:uppercase;margin-bottom:1.5vh}
+#timer-phase{font-size:5rem;font-weight:600;letter-spacing:.1em;margin-bottom:2vh;line-height:1}
+#timer-phase.hard{color:#d87878}
+#timer-phase.easy{color:#6fa06f}
+#timer-cues{margin-top:3vh;max-width:80ch}
+.t-cue{font-size:1.4rem;color:#8a8475;line-height:1.55;margin-bottom:.6vh;text-align:left}
+.t-cue-lbl{color:#b8a878;font-variant:small-caps;letter-spacing:.1em;margin-right:.4em}
 #wisdom-section{font-size:1.2rem;color:#6f7a6f;margin-top:6vh;letter-spacing:.06em;text-align:center}
 #wisdom-section strong{color:#b8a878;font-weight:400}
 .step{display:none}.step.active{display:block}
@@ -105,8 +112,11 @@ body{padding:3vh 2.5vw 14vh 2.5vw;margin:0 auto;line-height:1.5}
   <div id="workout-list"></div>
 </section>
 <div id="timer-overlay" class="hidden">
+  <div id="timer-round" class="hidden">—</div>
+  <div id="timer-phase" class="hidden">—</div>
   <div id="timer-name">—</div>
   <div id="timer-display">0:00</div>
+  <div id="timer-cues" class="hidden"></div>
   <div id="timer-buttons">
     <button id="timer-toggle" onclick="toggleTimer()">Start</button>
     <button onclick="closeTimer(true)">Done ✓</button>
@@ -190,12 +200,18 @@ var READINGS=[
 ];
 
 var MOBILITY=[
-  {name:"Easy bike warmup",timed:true,dur:180,dose:"3 min, easy pedal"},
-  {name:"Couch stretch",timed:true,dur:60,dose:"60 sec each side, x2"},
-  {name:"90/90 hip stretches",timed:true,dur:60,dose:"60 sec each side, x2"},
-  {name:"Glute bridge",timed:false,dose:"15 reps"},
-  {name:"Dynamic hamstring floss",timed:false,dose:"10 each leg"},
-  {name:"Dead bug",timed:false,dose:"8 each side, slow"}
+  {name:"Easy bike warmup",timed:true,dur:180,dose:"3 min, easy pedal",
+   setup:"Mount bike, resistance 1–2.",exec:"Easy pedaling ~70 RPM. Sit upright.",feel:"Gentle warmth, no strain."},
+  {name:"Couch stretch",timed:true,dur:60,dose:"60 sec each side, x2",sides:2,rounds:2,
+   setup:"Rear shin against wall/couch. Front foot flat. Hands on hips.",exec:"Drive hips forward. Squeeze rear glute HARD. Stay tall — no arching lower back.",feel:"Deep hip flexor/quad stretch. NOT lower back."},
+  {name:"90/90 hip stretches",timed:true,dur:60,dose:"60 sec each side",sides:2,
+   setup:"Sit on floor, both knees bent 90°. Front leg forward, rear leg to side.",exec:"Lean forward over front shin. Stay tall, breathe into the stretch.",feel:"Outer hip of front leg, inner hip of rear leg."},
+  {name:"Glute bridge",timed:false,dose:"15 reps",
+   setup:"Lie on back. Feet flat, hip-width, ~8\" from glutes.",exec:"Drive through heels. Squeeze glutes hard at top for 1 sec.",feel:"Glutes and hamstrings. NOT lower back."},
+  {name:"Dynamic hamstring floss",timed:false,dose:"10 each leg",
+   setup:"Stand on one leg. Soft knee.",exec:"Hinge at hip, reach toward floor. Return.",feel:"Hamstring lengthening, gentle tension."},
+  {name:"Dead bug",timed:false,dose:"8 each side, slow",
+   setup:"Lie on back. Arms up. Knees tabletop. Lower back FLAT.",exec:"Slowly extend opposite arm and leg. Return. Switch.",feel:"Deep core firing. Lower back stays down."}
 ];
 
 var PROVERBS=[
@@ -254,11 +270,11 @@ var WORKOUTS={
   {name:"Easy Bike Cooldown",sets:1,timed:true,dur:300,rest:0,sw:"Low resistance",setup:"Bike, low resistance.",exec:"5 min easy pedaling.",feel:"HR dropping."}
 ]},
 3:{day:"Wednesday",title:"Conditioning + Mobility",exs:[
-  {name:"Bike Intervals",sets:1,timed:true,dur:900,rest:0,sw:"5 rounds: 2 min easy / 1 min hard",setup:"Bike ready. 5 rounds.",exec:"2 min easy → 1 min hard. 5x.",feel:"Breathing elevated easy, burning hard."},
+  {name:"Bike Intervals",sets:1,timed:true,dur:900,rest:0,sw:"5 rounds: 2 min easy / 1 min hard",intervals:{pattern:[{phase:"EASY",dur:120},{phase:"HARD",dur:60}],rounds:5},setup:"Bike ready. 5 rounds.",exec:"2 min easy → 1 min hard. 5x.",feel:"Breathing elevated easy, burning hard."},
   {name:"World's Greatest Stretch",sets:1,reps:"5 each side",rest:0,setup:"Plank position.",exec:"Step foot outside hand. Drop opposite knee. Reach to ceiling.",feel:"Hip flexor, t-spine, shoulder."},
   {name:"90/90 Hip Transitions",sets:1,reps:"10 each direction",rest:0,setup:"Sit in 90/90 on floor.",exec:"Rotate to switch legs. Sit tall.",feel:"Hip capsule opening."},
   {name:"Thoracic Rotation",sets:1,reps:"10 each side",rest:0,setup:"Side-lying. Bottom knee bent 90°. Palms together.",exec:"Open top arm, rotate chest to ceiling.",feel:"Mid-back rotating open."},
-  {name:"Couch Stretch Hold",sets:2,timed:true,dur:90,rest:0,sw:"90 sec each side",setup:"Rear shin on wall. Front foot forward.",exec:"Hold 90 sec. Squeeze rear glute. Breathe.",feel:"Deep hip flexor release."},
+  {name:"Couch Stretch Hold",sets:2,sides:2,timed:true,dur:90,rest:0,sw:"90 sec each side",setup:"Rear shin on wall. Front foot forward.",exec:"Hold 90 sec. Squeeze rear glute. Breathe.",feel:"Deep hip flexor release."},
   {name:"Bear Crawl",sets:3,timed:true,dur:30,rest:30,sw:"30 sec on",setup:"Hands under shoulders, knees lifted 1 inch.",exec:"Crawl forward, opposite hand/foot.",feel:"Core lit up. Hip and shoulder stability."}
 ]},
 4:{day:"Thursday",title:"Upper Hypertrophy / Stability",exs:[
@@ -269,7 +285,7 @@ var WORKOUTS={
   {name:"Single-Arm DB Row",sets:3,reps:"12 each",rest:60,sw:"35–55 lbs",setup:"Hand and knee on bench. Flat back.",exec:"Row to hip. Full stretch at bottom.",feel:"Lat stretch then strong contraction."},
   {name:"Hammer Curl",sets:2,reps:12,rest:60,sw:"25–35 lbs",setup:"Neutral grip. Elbows at sides.",exec:"Curl up, thumbs to ceiling.",feel:"Brachialis and forearm."},
   {name:"Tricep Overhead Extension",sets:2,reps:12,rest:60,sw:"20–30 lbs",setup:"One DB overhead, both hands.",exec:"Lower behind head. Press back up.",feel:"Long head stretch and contraction."},
-  {name:"Dead Hang",sets:3,timed:true,dur:20,rest:60,sw:"BW",setup:"Bar, shoulder-width grip.",exec:"Hold 20 sec. Squeeze grip. Shoulders packed.",feel:"Forearms and grip. Shoulder decompression."},
+  {name:"Pull-up Progression",sets:3,reps:"5–8 strict, OR 20s active hang, OR 3 negatives",rest:90,sw:"BW",setup:"Bar overhead, shoulder-width grip. Pick the level you can finish all 3 sets at with form.",exec:"Strict: chin over bar, 2 sec controlled down. Active hang: 20–30 sec, shoulders packed (not slack). Negatives: jump up to top, lower yourself 3 sec.",feel:"Lats, biceps, grip. This is the foundation for rope climbs, wall climbs, and the multi-rig at Spartan. Build it now."},
   {name:"Farmer Carry (finisher)",sets:3,timed:true,dur:30,rest:60,sw:"50–70 lbs ea",setup:"Heavy DBs at sides. Stand tall.",exec:"Walk slowly 30 sec. Tall spine. Core braced.",feel:"Grip, core, traps. Not spine."}
 ]},
 5:{day:"Friday",title:"Lower + Athletic Conditioning",exs:[
@@ -280,7 +296,11 @@ var WORKOUTS={
   {name:"Bike Sprint Intervals",sets:1,timed:true,dur:600,rest:0,sw:"6 rounds: 30 sec hard / 90 sec easy",setup:"High resistance ready.",exec:"30 sec ALL OUT. 90 sec easy. 6 rounds.",feel:"Lungs on fire."},
   {name:"Side Plank + Hip Dips (finisher)",sets:3,timed:true,dur:30,rest:30,sw:"30 sec ea side",setup:"Side-lying. Elbow under shoulder.",exec:"Lift hips. Hold 30 sec. Then 10 hip dips each.",feel:"Obliques and glute medius."}
 ]},
-6:{rest:true,day:"Saturday",title:"Reset",line:"Walk. Mobility. Whatever the body asks for."}
+6:{day:"Saturday",title:"Spartan Prep — Run + Burpees",exs:[
+  {name:"Easy Run (Z2)",sets:1,timed:true,dur:1500,rest:0,sw:"25 min conversational pace",setup:"Park or open path. Light layers. Watch for feet, not pace.",exec:"Conversational pace — if you can't talk in full sentences, slow down. Land midfoot, relaxed shoulders. Walk 1 min every 4 min jog if calves protest.",feel:"Aerobic and sustainable. Calves/shins working but not screaming. This is base-building, not a workout to win."},
+  {name:"Burpees",sets:4,reps:10,rest:60,sw:"BW",setup:"Open ground. Clear space around you.",exec:"Squat to plank, chest to floor, jump back to squat, jump up with hands overhead. Maintain pace — don't sprint, don't crawl. Get smooth.",feel:"Hard. Full body, lungs taxed. Burpee economy is Spartan currency — 30 of these per failed obstacle in the race."},
+  {name:"Farmer Carry",sets:3,timed:true,dur:40,rest:60,sw:"40m, 50–70 lbs each",setup:"Heavy DBs at sides. Stand tall.",exec:"Walk slowly 40 sec. Tall spine. Core braced. Grip squeezing the handle.",feel:"Grip, traps, core. This is the exact pattern you'll need at the 200m Hyrox carry station."}
+]}
 };
 
 var S={sessionStart:null,sessionIv:null,mobilityState:[],exState:[],timer:{remainingSecs:0,iv:null,running:false,onDone:null,name:""}};
@@ -314,92 +334,17 @@ function renderMobility(){
     li.innerHTML='<div class="mob-left"><div class="mob-name">'+m.name+'</div><div class="mob-dose">'+m.dose+'</div></div>';
     var btn=document.createElement('button');btn.className='mob-btn'+(st.done?' done':'');
     if(st.done){btn.textContent='✓ done';btn.onclick=function(){st.done=false;renderMobility();};}
-    else if(m.timed){btn.textContent='Start '+fmtMS(m.dur);btn.onclick=function(){startTimer(m.dur,m.name+' — '+m.dose,function(){st.done=true;renderMobility();});};}
-    else{btn.textContent='Mark done';btn.onclick=function(){st.done=true;renderMobility();};}
-    li.appendChild(btn);ol.appendChild(li);
-  });
-}
-var WORKOUTS={
-0:{rest:true,day:"Sunday",title:"Rest",line:"Walk. Family. Sabbath."},
-1:{day:"Monday",title:"Upper Strength",exs:[
-  {name:"DB Bench Press",sets:4,reps:"6–8",rest:90,sw:"30–45 lbs",setup:"Lie flat. DBs at chest, elbows ~45°.",exec:"Press up and slightly in. Lower 2–3 sec. Touch chest lightly.",feel:"Chest and triceps. Blades retracted."},
-  {name:"DB Bent-Over Row",sets:4,reps:"8 each",rest:90,sw:"40–60 lbs",setup:"Hinge ~45°. Soft knees. Core braced.",exec:"Row to lower ribcage. Lead with elbow. Squeeze at top.",feel:"Lats and rhomboids. Core stiff."},
-  {name:"DB Shoulder Press",sets:3,reps:8,rest:75,sw:"25–35 lbs",setup:"Seated or standing. DBs at shoulder height.",exec:"Press overhead. Ribs down — no back arch.",feel:"Deltoids. NOT lower back."},
-  {name:"Band Pull-Apart",sets:3,reps:15,rest:60,sw:"Light band",setup:"Arms straight at chest height.",exec:"Pull band apart, squeeze blades. Control return.",feel:"Rear delts and rhomboids."},
-  {name:"DB Bicep Curl",sets:2,reps:10,rest:60,sw:"20 lbs",setup:"Palms forward. Elbows pinned at sides.",exec:"Curl up, squeeze, lower 2 sec. Elbows still.",feel:"Bicep peak contraction."},
-  {name:"Wrist Curl + Reverse",sets:2,reps:"15 + 15",rest:45,sw:"5–10 lbs",setup:"Forearm on thigh, wrist off knee.",exec:"15 palm-up, flip, 15 palm-down = 1 set.",feel:"Forearm flexors then extensors."},
-  {name:"Incline Pushup (finisher)",sets:3,reps:"8–10 clean",rest:60,sw:"BW on couch arm",setup:"Hands on couch arm. Body straight.",exec:"Lower 2 sec. Press up fully. Stop when hips sag.",feel:"Chest, triceps, bracing core."}
-]},
-2:{day:"Tuesday",title:"Lower / Posterior Chain",exs:[
-  {name:"Goblet Squat",sets:4,reps:8,rest:90,sw:"35–55 lbs",setup:"DB vertical at chest. Feet shoulder-width.",exec:"Sit back and down. Drive through full foot.",feel:"Quads, glutes, inner thighs."},
-  {name:"Romanian Deadlift (DB)",sets:4,reps:8,rest:90,sw:"40–65 lbs",setup:"DBs in front of thighs. Soft knees.",exec:"Push HIPS BACK. Slide DBs down thighs. Drive hips forward.",feel:"Hamstrings and glutes. NOT lower back."},
-  {name:"Bulgarian Split Squat",sets:3,reps:"8 each",rest:90,sw:"BW or 15–25 lbs ea",setup:"Rear foot on couch. Front foot forward.",exec:"Lower rear knee toward floor. Torso upright.",feel:"Front quad and glute."},
-  {name:"DB Hip Thrust",sets:3,reps:15,rest:75,sw:"35–55 lbs",setup:"Upper back on couch. DB on hips.",exec:"Drive hips UP. Squeeze glutes 1–2 sec at top.",feel:"Glutes only. Nothing in lower back."},
-  {name:"Standing Calf Raise",sets:2,reps:20,rest:60,sw:"BW or DBs",setup:"Stand on step edge. Hold wall.",exec:"Rise onto balls. Pause. Lower SLOW — 3 sec down.",feel:"Calf fully contracted at top."},
-  {name:"Easy Bike Cooldown",sets:1,timed:true,dur:300,rest:0,sw:"Low resistance",setup:"Bike, low resistance.",exec:"5 min easy pedaling.",feel:"HR dropping."}
-]},
-3:{day:"Wednesday",title:"Conditioning + Mobility",exs:[
-  {name:"Bike Intervals",sets:1,timed:true,dur:900,rest:0,sw:"5 rounds: 2 min easy / 1 min hard",setup:"Bike ready. 5 rounds.",exec:"2 min easy → 1 min hard. 5x.",feel:"Breathing elevated easy, burning hard."},
-  {name:"World's Greatest Stretch",sets:1,reps:"5 each side",rest:0,setup:"Plank position.",exec:"Step foot outside hand. Drop opposite knee. Reach to ceiling.",feel:"Hip flexor, t-spine, shoulder."},
-  {name:"90/90 Hip Transitions",sets:1,reps:"10 each direction",rest:0,setup:"Sit in 90/90 on floor.",exec:"Rotate to switch legs. Sit tall.",feel:"Hip capsule opening."},
-  {name:"Thoracic Rotation",sets:1,reps:"10 each side",rest:0,setup:"Side-lying. Bottom knee bent 90°. Palms together.",exec:"Open top arm, rotate chest to ceiling.",feel:"Mid-back rotating open."},
-  {name:"Couch Stretch Hold",sets:2,timed:true,dur:90,rest:0,sw:"90 sec each side",setup:"Rear shin on wall. Front foot forward.",exec:"Hold 90 sec. Squeeze rear glute. Breathe.",feel:"Deep hip flexor release."},
-  {name:"Bear Crawl",sets:3,timed:true,dur:30,rest:30,sw:"30 sec on",setup:"Hands under shoulders, knees lifted 1 inch.",exec:"Crawl forward, opposite hand/foot.",feel:"Core lit up. Hip and shoulder stability."}
-]},
-4:{day:"Thursday",title:"Upper Hypertrophy / Stability",exs:[
-  {name:"DB Incline Press",sets:3,reps:"10–12",rest:75,sw:"22–35 lbs",setup:"Couch arm as incline. DBs at upper chest.",exec:"Press up and in. Lower 3 sec.",feel:"Upper chest and front delt."},
-  {name:"Chest-Supported DB Row",sets:3,reps:12,rest:75,sw:"30–45 lbs",setup:"Face down on inclined couch. DBs hanging.",exec:"Row to ribcage. Full blade retraction.",feel:"Lats, rhomboids, rear delts."},
-  {name:"DB Lateral Raise",sets:3,reps:12,rest:60,sw:"10–15 lbs",setup:"Slight elbow bend. Lean 10–15° forward.",exec:"Raise to shoulder height. Lower 3 sec.",feel:"Side delts burning."},
-  {name:"Arnold Press",sets:3,reps:10,rest:75,sw:"20–30 lbs",setup:"DBs at chin, palms facing YOU.",exec:"Press up, rotate palms forward at top.",feel:"Full deltoid through rotation."},
-  {name:"Single-Arm DB Row",sets:3,reps:"12 each",rest:60,sw:"35–55 lbs",setup:"Hand and knee on bench. Flat back.",exec:"Row to hip. Full stretch at bottom.",feel:"Lat stretch then strong contraction."},
-  {name:"Hammer Curl",sets:2,reps:12,rest:60,sw:"25–35 lbs",setup:"Neutral grip. Elbows at sides.",exec:"Curl up, thumbs to ceiling.",feel:"Brachialis and forearm."},
-  {name:"Tricep Overhead Extension",sets:2,reps:12,rest:60,sw:"20–30 lbs",setup:"One DB overhead, both hands.",exec:"Lower behind head. Press back up.",feel:"Long head stretch and contraction."},
-  {name:"Dead Hang",sets:3,timed:true,dur:20,rest:60,sw:"BW",setup:"Bar, shoulder-width grip.",exec:"Hold 20 sec. Squeeze grip. Shoulders packed.",feel:"Forearms and grip. Shoulder decompression."},
-  {name:"Farmer Carry (finisher)",sets:3,timed:true,dur:30,rest:60,sw:"50–70 lbs ea",setup:"Heavy DBs at sides. Stand tall.",exec:"Walk slowly 30 sec. Tall spine. Core braced.",feel:"Grip, core, traps. Not spine."}
-]},
-5:{day:"Friday",title:"Lower + Athletic Conditioning",exs:[
-  {name:"DB Jump Squat (Light)",sets:3,reps:8,rest:90,sw:"10–15 lbs ea",setup:"Light DBs at sides. Feet shoulder-width.",exec:"Squat to parallel. Explode up. Land SOFT.",feel:"Explosive, athletic."},
-  {name:"Single-Leg RDL",sets:3,reps:"8 each",rest:90,sw:"20–35 lbs ea",setup:"Stand on one leg. Soft knee.",exec:"Hinge, rear leg rises. Hips level.",feel:"Hamstring loaded. Glute stabilizing."},
-  {name:"Lateral Lunge",sets:3,reps:"10 each",rest:75,sw:"BW or 15–20 lbs",setup:"Feet together.",exec:"Step wide. Sit into that hip. Push back.",feel:"Inner thigh and glute of bent leg."},
-  {name:"DB Step-Up",sets:3,reps:"10 each",rest:75,sw:"20–30 lbs ea",setup:"Stable box. DBs at sides.",exec:"Drive through heel to stand. Controlled down.",feel:"Quad and glute of working leg."},
-  {name:"Bike Sprint Intervals",sets:1,timed:true,dur:600,rest:0,sw:"6 rounds: 30 sec hard / 90 sec easy",setup:"High resistance ready.",exec:"30 sec ALL OUT. 90 sec easy. 6 rounds.",feel:"Lungs on fire."},
-  {name:"Side Plank + Hip Dips (finisher)",sets:3,timed:true,dur:30,rest:30,sw:"30 sec ea side",setup:"Side-lying. Elbow under shoulder.",exec:"Lift hips. Hold 30 sec. Then 10 hip dips each.",feel:"Obliques and glute medius."}
-]},
-6:{rest:true,day:"Saturday",title:"Reset",line:"Walk. Mobility. Whatever the body asks for."}
-};
-
-var S={sessionStart:null,sessionIv:null,mobilityState:[],exState:[],timer:{remainingSecs:0,iv:null,running:false,onDone:null,name:""}};
-
-function render(){
-  var now=new Date(),dse=daysSinceStart(),idx=((dse%READINGS.length)+READINGS.length)%READINGS.length,r=READINGS[idx];
-  document.getElementById('date').textContent=fmtDate(now);
-  document.getElementById('clock').textContent=fmtClock(now);
-  renderDevotional(r);renderMobility();renderWorkout(now.getDay());
-  var pIdx=((now.getDate()-1)%31);var pv=PROVERBS[pIdx];
-  document.getElementById('proverb-ref').textContent='Proverbs '+pv.ref;
-  document.getElementById('proverb-text').textContent='\u201C'+pv.text+'\u201D';
-}
-function renderDevotional(r){
-  document.getElementById('reading-ref').textContent=r.ref;
-  document.getElementById('reading-opening').textContent='“'+r.open+'”';
-  var b=document.getElementById('devotional-body');b.innerHTML='';
-  if(r.sections&&r.sections.length){
-    r.sections.forEach(function(sec,i){
-      var h=document.createElement('h3');h.textContent=sec.h;b.appendChild(h);
-      if(i===r.sections.length-1&&r.verse){var v=document.createElement('div');v.className='verse';v.textContent=r.verse;b.appendChild(v);}
-      var p=document.createElement('p');p.textContent=sec.body;b.appendChild(p);
-    });
-  }else{var p=document.createElement('p');p.className='reflect-short';p.textContent=r.reflect||'';b.appendChild(p);}
-}
-function renderMobility(){
-  var ol=document.getElementById('mobility-list');ol.innerHTML='';
-  if(S.mobilityState.length!==MOBILITY.length)S.mobilityState=MOBILITY.map(function(){return{done:false};});
-  MOBILITY.forEach(function(m,i){
-    var st=S.mobilityState[i],li=document.createElement('li');li.className='mob-row'+(st.done?' done':'');
-    li.innerHTML='<div class="mob-left"><div class="mob-name">'+m.name+'</div><div class="mob-dose">'+m.dose+'</div></div>';
-    var btn=document.createElement('button');btn.className='mob-btn'+(st.done?' done':'');
-    if(st.done){btn.textContent='✓ done';btn.onclick=function(){st.done=false;renderMobility();};}
-    else if(m.timed){btn.textContent='Start '+fmtMS(m.dur);btn.onclick=function(){startTimer(m.dur,m.name+' — '+m.dose,function(){st.done=true;renderMobility();});};}
+    else if(m.timed){btn.textContent='Start '+fmtMS(m.dur);btn.onclick=(function(mo,sti){return function(){
+      var sides=mo.sides||1,rounds=mo.rounds||1,legs=[];
+      for(var rr=0;rr<rounds;rr++){for(var ss=0;ss<sides;ss++){
+        var lbl=mo.name;
+        if(sides>1)lbl+=' — '+(ss===0?'right':'left')+' side';
+        if(rounds>1)lbl+=', round '+(rr+1)+' of '+rounds;
+        if(sides===1&&rounds===1)lbl+=' — '+mo.dose;
+        legs.push({dur:mo.dur,label:lbl});
+      }}
+      startTimedSequence({legs:legs,cues:{setup:mo.setup,exec:mo.exec,feel:mo.feel},onComplete:function(){sti.done=true;renderMobility();}});
+    };})(m,st);}
     else{btn.textContent='Mark done';btn.onclick=function(){st.done=true;renderMobility();};}
     li.appendChild(btn);ol.appendChild(li);
   });
@@ -442,11 +387,24 @@ function completeSet(i){
 function startExerciseTimer(i){
   var w=WORKOUTS[new Date().getDay()],ex=w.exs[i],st=S.exState[i];
   var ni=st.sets.indexOf(false);if(ni===-1)return;
-  startTimer(ex.dur,ex.name+(st.sets.length>1?' — set '+(ni+1)+' of '+st.sets.length:''),function(){
-    st.sets[ni]=true;
-    var ad=st.sets.every(function(x){return x;});
-    if(!ad&&ex.rest)startTimer(ex.rest,'Rest — '+ex.name,function(){renderWorkout(new Date().getDay());});
-    else renderWorkout(new Date().getDay());
+  var sides=ex.sides||1,total=st.sets.length;
+  var legs=[];
+  for(var s=0;s<sides;s++){
+    var lbl=ex.name;
+    if(total>1)lbl+=' — set '+(ni+1)+' of '+total;
+    if(sides>1)lbl+=' — '+(s===0?'right':'left')+' side';
+    legs.push({dur:ex.dur,label:lbl});
+  }
+  startTimedSequence({
+    legs:legs,
+    cues:{setup:ex.setup,exec:ex.exec,feel:ex.feel},
+    intervals:ex.intervals||null,
+    onComplete:function(){
+      st.sets[ni]=true;
+      var ad=st.sets.every(function(x){return x;});
+      if(!ad&&ex.rest)startTimer(ex.rest,'Rest — '+ex.name,function(){renderWorkout(new Date().getDay());});
+      else renderWorkout(new Date().getDay());
+    }
   });
 }
 function resetExercise(i){var st=S.exState[i];for(var j=0;j<st.sets.length;j++)st.sets[j]=false;renderWorkout(new Date().getDay());}
@@ -465,28 +423,90 @@ function updateSessionClock(){
   document.getElementById('session-clock').textContent=(h?h+':'+(m<10?'0':''):'')+m+':'+(x<10?'0':'')+x;
 }
 function startTimer(s,n,cb){
-  S.timer.remainingSecs=s;S.timer.onDone=cb||function(){};S.timer.name=n;S.timer.running=true;
+  startTimedSequence({legs:[{dur:s,label:n}], onComplete:cb||function(){}});
+}
+function startTimedSequence(opts){
+  S.timer.legs=opts.legs;S.timer.legIdx=0;
+  S.timer.cues=opts.cues||null;S.timer.intervals=opts.intervals||null;
+  S.timer.onComplete=opts.onComplete||function(){};
+  S.timer.lastPhaseKey=null;
+  beginLeg();
+}
+function beginLeg(){
+  var leg=S.timer.legs[S.timer.legIdx];
+  S.timer.remainingSecs=leg.dur;
+  S.timer.totalDur=leg.dur;
+  S.timer.running=true;
   clearInterval(S.timer.iv);
   document.getElementById('timer-overlay').classList.remove('hidden');
-  document.getElementById('timer-name').textContent=n;
+  document.getElementById('timer-name').textContent=leg.label;
   document.getElementById('timer-toggle').textContent='Pause';
-  updateTimerDisplay();S.timer.iv=setInterval(tickTimer,1000);
+  // Cues
+  var cuesEl=document.getElementById('timer-cues');
+  if(S.timer.cues&&(S.timer.cues.setup||S.timer.cues.exec||S.timer.cues.feel)){
+    var h='';
+    if(S.timer.cues.setup)h+='<div class="t-cue"><span class="t-cue-lbl">setup</span>'+S.timer.cues.setup+'</div>';
+    if(S.timer.cues.exec)h+='<div class="t-cue"><span class="t-cue-lbl">exec</span>'+S.timer.cues.exec+'</div>';
+    if(S.timer.cues.feel)h+='<div class="t-cue"><span class="t-cue-lbl">feel</span>'+S.timer.cues.feel+'</div>';
+    cuesEl.innerHTML=h;cuesEl.classList.remove('hidden');
+  }else{cuesEl.classList.add('hidden');}
+  // Interval labels visibility
+  if(!S.timer.intervals){
+    document.getElementById('timer-phase').classList.add('hidden');
+    document.getElementById('timer-round').classList.add('hidden');
+  }
+  updateTimerDisplay();
+  S.timer.iv=setInterval(tickTimer,1000);
 }
 function tickTimer(){
   if(!S.timer.running)return;
-  S.timer.remainingSecs--;updateTimerDisplay();
+  S.timer.remainingSecs--;
+  // Phase-change detection for intervals
+  if(S.timer.intervals){
+    var iv=S.timer.intervals,el=S.timer.totalDur-S.timer.remainingSecs;
+    var cd=0;for(var i=0;i<iv.pattern.length;i++)cd+=iv.pattern[i].dur;
+    var inC=el%cd,cum=0,phI=0;
+    for(var i=0;i<iv.pattern.length;i++){if(inC<cum+iv.pattern[i].dur){phI=i;break;}cum+=iv.pattern[i].dur;}
+    var rdI=Math.floor(el/cd);
+    var key=rdI+'-'+phI;
+    if(S.timer.lastPhaseKey&&S.timer.lastPhaseKey!==key){
+      try{tone(iv.pattern[phI].phase==='HARD'?880:440,250);}catch(e){}
+    }
+    S.timer.lastPhaseKey=key;
+  }
+  updateTimerDisplay();
   if(S.timer.remainingSecs<=0){
     clearInterval(S.timer.iv);S.timer.running=false;
     var d=document.getElementById('timer-display');d.textContent='Done';d.className='done';
     try{beep();}catch(e){}
-    setTimeout(function(){closeTimer(true);},1500);
+    if(S.timer.legIdx<S.timer.legs.length-1){
+      setTimeout(function(){S.timer.legIdx++;beginLeg();},1500);
+    }else{
+      setTimeout(function(){closeTimer(true);},1500);
+    }
   }
 }
 function updateTimerDisplay(){
   var d=document.getElementById('timer-display');
-  d.textContent=fmtMS(Math.max(0,S.timer.remainingSecs));d.className='';
-  if(S.timer.remainingSecs<=5)d.className='go';
-  else if(S.timer.remainingSecs<=15)d.className='warn';
+  if(S.timer.intervals){
+    var iv=S.timer.intervals,el=S.timer.totalDur-S.timer.remainingSecs;
+    var cd=0;for(var i=0;i<iv.pattern.length;i++)cd+=iv.pattern[i].dur;
+    var inC=el%cd,cum=0,phI=0,phEl=0;
+    for(var i=0;i<iv.pattern.length;i++){if(inC<cum+iv.pattern[i].dur){phI=i;phEl=inC-cum;break;}cum+=iv.pattern[i].dur;}
+    var ph=iv.pattern[phI],phRem=ph.dur-phEl,rdI=Math.floor(el/cd);
+    var phEl_d=document.getElementById('timer-phase');
+    phEl_d.textContent=ph.phase;phEl_d.className=ph.phase.toLowerCase();
+    phEl_d.classList.remove('hidden');
+    var rd=document.getElementById('timer-round');
+    rd.textContent='Round '+(rdI+1)+' of '+iv.rounds;rd.classList.remove('hidden');
+    d.textContent=fmtMS(Math.max(0,phRem));
+    d.className='';
+    if(phRem<=3)d.className='go';else if(phRem<=8)d.className='warn';
+  }else{
+    d.textContent=fmtMS(Math.max(0,S.timer.remainingSecs));d.className='';
+    if(S.timer.remainingSecs<=5)d.className='go';
+    else if(S.timer.remainingSecs<=15)d.className='warn';
+  }
 }
 function toggleTimer(){
   S.timer.running=!S.timer.running;
@@ -497,9 +517,10 @@ function toggleTimer(){
 function closeTimer(c){
   clearInterval(S.timer.iv);S.timer.running=false;
   document.getElementById('timer-overlay').classList.add('hidden');
-  if(c&&typeof S.timer.onDone==='function'){var cb=S.timer.onDone;S.timer.onDone=null;cb();}
+  if(c&&typeof S.timer.onComplete==='function'){var cb=S.timer.onComplete;S.timer.onComplete=null;cb();}
 }
 function beep(){var c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.value=.12;o.start();setTimeout(function(){o.stop();c.close();},350);}
+function tone(freq,ms){var c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=freq;g.gain.value=.14;o.start();setTimeout(function(){o.stop();c.close();},ms||250);}
 function voiceWeight(i){
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   var btn=document.getElementById('mic-'+i);
