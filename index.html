@@ -141,6 +141,7 @@ var START_DATE=new Date(2026,4,19);START_DATE.setHours(0,0,0,0);
 function daysSinceStart(){return Math.floor((todayLocal()-START_DATE)/86400000);}
 
 var WORKOUT_OVERRIDE={"2026-05-22":4,"2026-05-23":5}; // 5/22: do Thursday's workout (skipped Thu); 5/23: shift Friday's to Sat
+var EXERCISE_OVERRIDE={"2026-05-22":{"Farmer Carry (finisher)":{name:"Suitcase Hold (finisher) — no-space sub",sets:3,timed:true,dur:30,rest:60,sw:"50–70 lbs ea",setup:"Heavy DBs at sides. Stand tall in place — no walking room needed.",exec:"Hold tall and still for 30 sec. Tall spine, core braced, grip squeezing the handle. Don't shift feet.",feel:"Grip, traps, core — same demand as the carry. Swap back to actual Farmer Carry next week when the floor is clear."}}}; // per-date single-exercise swaps
 
 var READINGS=[
   {ref:"Romans 1",
@@ -651,7 +652,7 @@ var WORKOUTS={
   {name:"Single-Arm DB Row",sets:3,reps:"12 each",rest:60,sw:"35–55 lbs",setup:"Hand and knee on bench. Flat back.",exec:"Row to hip. Full stretch at bottom.",feel:"Lat stretch then strong contraction."},
   {name:"Hammer Curl",sets:2,reps:12,rest:60,sw:"25–35 lbs",setup:"Neutral grip. Elbows at sides.",exec:"Curl up, thumbs to ceiling.",feel:"Brachialis and forearm."},
   {name:"Tricep Overhead Extension",sets:2,reps:12,rest:60,sw:"20–30 lbs",setup:"One DB overhead, both hands.",exec:"Lower behind head. Press back up.",feel:"Long head stretch and contraction."},
-  {name:"Pull-up Progression",sets:3,reps:"5–8 strict, OR 20s active hang, OR 3 negatives",rest:90,sw:"BW",setup:"Bar overhead, shoulder-width grip. Pick the level you can finish all 3 sets at with form.",exec:"Strict: chin over bar, 2 sec controlled down. Active hang: 20–30 sec, shoulders packed (not slack). Negatives: jump up to top, lower yourself 3 sec.",feel:"Lats, biceps, grip. This is the foundation for rope climbs, wall climbs, and the multi-rig at Spartan. Build it now."},
+  {name:"DB Pullover (no-bar sub for pullups)",sets:3,reps:"10–12",rest:75,sw:"30–45 lbs",setup:"Lie on back, floor or bench. Hold one DB with both hands above chest, arms nearly straight (slight elbow bend).",exec:"Lower DB in an arc behind your head until you feel a deep lat stretch. Pull back to start under control. 2–3 sec down, 1 sec up.",feel:"Deep lat stretch then strong contraction. Serratus and triceps assist. Closest pullup-pattern surrogate without a bar — swap back to Pull-up Progression once the bar is up."},
   {name:"Farmer Carry (finisher)",sets:3,timed:true,dur:30,rest:60,sw:"50–70 lbs ea",setup:"Heavy DBs at sides. Stand tall.",exec:"Walk slowly 30 sec. Tall spine. Core braced.",feel:"Grip, core, traps. Not spine."}
 ]},
 5:{day:"Friday",title:"Lower + Athletic Conditioning",exs:[
@@ -719,6 +720,7 @@ function renderWorkout(wd){
   var _d=new Date(),_k=_d.getFullYear()+'-'+String(_d.getMonth()+1).padStart(2,'0')+'-'+String(_d.getDate()).padStart(2,'0');
   if(typeof WORKOUT_OVERRIDE!=='undefined'&&WORKOUT_OVERRIDE[_k]!==undefined)wd=WORKOUT_OVERRIDE[_k];
   var w=WORKOUTS[wd];if(!w){document.getElementById('workout-title').textContent='—';return;}
+  if(typeof EXERCISE_OVERRIDE!=='undefined'&&EXERCISE_OVERRIDE[_k]&&w.exs){var _sub=EXERCISE_OVERRIDE[_k];w=Object.assign({},w,{exs:w.exs.map(function(_ex){return _sub[_ex.name]||_ex;})});}
   document.getElementById('workout-title').textContent=w.title;
   var list=document.getElementById('workout-list');list.innerHTML='';
   if(w.rest){var p=document.createElement('p');p.className='reflect-short';p.style.fontSize='1.5rem';p.style.color='#8a8475';p.textContent=w.line;list.appendChild(p);return;}
