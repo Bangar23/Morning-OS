@@ -140,6 +140,8 @@ function fmtMS(s){var m=Math.floor(s/60),x=s%60;return m+':'+(x<10?'0':'')+x;}
 var START_DATE=new Date(2026,4,19);START_DATE.setHours(0,0,0,0);
 function daysSinceStart(){return Math.floor((todayLocal()-START_DATE)/86400000);}
 
+var WORKOUT_OVERRIDE={"2026-05-22":4,"2026-05-23":5}; // 5/22: do Thursday's workout (skipped Thu); 5/23: shift Friday's to Sat
+
 var READINGS=[
   {ref:"Romans 1",
    open:"Paul, a servant of Christ Jesus, called to be an apostle, set apart for the gospel of God.",
@@ -714,6 +716,8 @@ function renderMobility(){
   });
 }
 function renderWorkout(wd){
+  var _d=new Date(),_k=_d.getFullYear()+'-'+String(_d.getMonth()+1).padStart(2,'0')+'-'+String(_d.getDate()).padStart(2,'0');
+  if(typeof WORKOUT_OVERRIDE!=='undefined'&&WORKOUT_OVERRIDE[_k]!==undefined)wd=WORKOUT_OVERRIDE[_k];
   var w=WORKOUTS[wd];if(!w){document.getElementById('workout-title').textContent='—';return;}
   document.getElementById('workout-title').textContent=w.title;
   var list=document.getElementById('workout-list');list.innerHTML='';
