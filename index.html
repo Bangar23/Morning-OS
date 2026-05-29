@@ -140,7 +140,7 @@ function fmtMS(s){var m=Math.floor(s/60),x=s%60;return m+':'+(x<10?'0':'')+x;}
 var START_DATE=new Date(2026,4,19);START_DATE.setHours(0,0,0,0);
 function daysSinceStart(){return Math.floor((todayLocal()-START_DATE)/86400000);}
 
-var WORKOUT_OVERRIDE={"2026-05-27":2,"2026-05-28":3}; // 5/27: do Tue's Lower (missed); 5/28: do Wed's Conditioning // 5/22: do Thursday's workout (skipped Thu); 5/23: shift Friday's to Sat
+var WORKOUT_OVERRIDE={"2026-05-29":4,"2026-05-30":5}; // 5/29 Fri: do Thu Upper Hyper (missed); 5/30 Sat: do Fri Lower+Conditioning
 var REREAD_DATES=["2026-05-23","2026-05-28"]; // each date pauses the devotional rotation one extra day — yesterday's reading repeats on that date and everything shifts back by 1
 var EXERCISE_OVERRIDE={};
 
